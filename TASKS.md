@@ -11,14 +11,14 @@
 
 ## 0. 준비
 
-- [ ] **T00 · 프로젝트 뼈대** (P0)
+- [x] **T00 · 프로젝트 뼈대** (P0)
   - 만들 것: 폴더 `app/` `app/checks/` `mcp_server/` `knowledge/docs/` `examples/` `eval/channels/` `eval/cases/` `outputs/`, `requirements.txt`, `.env.example`, `app/config.py`(생성 모델·채점 모델 이름을 한 곳에서 지정)
   - 라이브러리는 CLAUDE.md 표에 있는 것만: langchain, langchain-openai, langgraph, langchain-chroma, chromadb, mcp, langchain-mcp-adapters, pydantic, python-dotenv
   - 완료 확인: `pip install -r requirements.txt` 성공, `python -c "import app.config"` 오류 없음
 
 ## 1. 데이터 (AI 초안, 사람 검토)
 
-- [ ] **T01 · 가상 채널 4개** (P0)
+- [x] **T01 · 가상 채널 4개** (P0)
   - 만들 것: `eval/channels/CH1~CH4.json` — 자취 살림(반말) · 직장인 출근룩(존댓말) · 맞벌이 주부 살림(존댓말) · 잔소리 큰언니 뷰티(반말)
   - 항목: concept, speech_style, tone_keywords, signature_opening, signature_ending, representative_format, avoid
   - 완료 확인: 4개 파일 모두 `json.load` 성공

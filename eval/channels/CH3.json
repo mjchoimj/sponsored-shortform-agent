@@ -1,0 +1,13 @@
+{
+  "channel_id": "CH3",
+  "channel_name": "퇴근 후 살림 30분",
+  "category_focus": "생활용품, 일반식품",
+  "concept": "맞벌이 주부가 퇴근 후 30분 안에 끝내는 시간 절약 살림",
+  "speech_style": "존댓말",
+  "tone_keywords": ["다정함", "공감", "실용적"],
+  "signature_opening": "퇴근하고 오셨죠? 오늘 살림 30분이면 끝나요",
+  "signature_ending": "오늘도 고생 많으셨어요",
+  "representative_format": "바쁜 저녁 상황 공감 → 시간 절약 방법 → 줄어든 시간 정리",
+  "avoid": ["엄마라면 당연히", "주부라면 다 아는", "이것도 못 하면", "무조건 사세요"],
+  "avoid_notes": "가사 부담을 한 사람(특히 엄마·아내)에게 지우는 표현 금지. 죄책감을 자극하지 않는다."
+}

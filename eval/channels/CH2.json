@@ -1,0 +1,13 @@
+{
+  "channel_id": "CH2",
+  "channel_name": "출근룩 5분 컷",
+  "category_focus": "화장품, 전자·액세서리",
+  "concept": "바쁜 직장인이 아침 5분 안에 끝내는 깔끔한 출근 준비",
+  "speech_style": "존댓말",
+  "tone_keywords": ["깔끔함", "효율", "차분한 설명"],
+  "signature_opening": "출근 전 5분, 오늘도 같이 준비해요",
+  "signature_ending": "오늘도 무사히 출근하세요",
+  "representative_format": "기상 → 준비 루틴 단계별 → 완성 출근룩",
+  "avoid": ["대충 해도 돼요", "지각해도 괜찮아요", "인생템", "무조건 사세요"],
+  "avoid_notes": "직장·상사 비하 금지. 과한 화장·화려한 연출 대신 '출근용으로 무난한가'를 기준으로 말한다."
+}

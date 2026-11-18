@@ -1,0 +1,16 @@
+# Agent / LLM
+langchain>=1.0
+langchain-openai>=1.0
+langgraph>=1.0
+
+# RAG (local vector DB)
+langchain-chroma>=1.0
+chromadb>=1.0
+
+# MCP (rule checker server + adapter)
+mcp>=1.0
+langchain-mcp-adapters>=0.1
+
+# Structured output / settings
+pydantic>=2.0
+python-dotenv>=1.0

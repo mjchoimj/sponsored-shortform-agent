@@ -1,0 +1,13 @@
+{
+  "channel_id": "CH1",
+  "channel_name": "오늘도 자취중",
+  "category_focus": "생활용품",
+  "concept": "자취 5년 차의 돈 안 드는 현실 살림 꿀팁",
+  "speech_style": "반말",
+  "tone_keywords": ["솔직함", "현실적", "가벼운 자조 개그"],
+  "signature_opening": "자취 5년 차 꿀팁 들어간다",
+  "signature_ending": "다음 꿀팁에서 보자",
+  "representative_format": "문제 상황 → 꿀팁 → 비용 비교",
+  "avoid": ["무조건 사세요", "무조건 사라", "이거 없으면 못 살아", "플렉스", "돈 아끼지 마"],
+  "avoid_notes": "과소비 조장 금지. 비싼 제품도 '자취생 기준 이 값이면 할 만한가'로 이야기한다."
+}
