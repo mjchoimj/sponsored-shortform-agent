@@ -218,7 +218,7 @@ flowchart TD
 | Python | 전체 구현 |
 | LangChain | LLM 호출, 프롬프트, 구조화 출력, Retriever |
 | LangGraph | 5장의 상태 그래프, 수정 루프, `interrupt` 기반 HITL |
-| RAG | 광고 규정 + 숏폼 노하우 문서 검색 (로컬 Chroma 또는 FAISS) |
+| RAG | 광고 규정 + 숏폼 노하우 문서 검색 (로컬 벡터 DB **Chroma**) |
 | Tool Calling | RAG 검색 도구 (P0), Tavily 웹 검색 도구 (P2) |
 | MCP | **자체 MCP 서버 "광고 규정 검사기"**: 금지 표현 검사, 광고 표시 문구 검사. Agent 실행 시 자동으로 함께 기동 (stdio) |
 | Middleware | ① 금지 표현 가드 (생성 직후 즉시 검사·경고) ② 실행 1회당 LLM 호출 횟수·비용 상한 ③ 일시 오류 자동 재시도 |
@@ -495,3 +495,4 @@ mini-pjt/
 | Q43 | 작업 시간은 목 09–18시(구현), 금 09–15시(측정·제출). Tavily는 P2, Middleware는 P1로 이동 |
 | Q44 | 시간 단위 일정 확정 (13장) |
 | Q45 | 사전 준비는 OpenAI 키와 LangSmith 가입만 |
+| Q46 | 로컬 벡터 DB는 Chroma |
