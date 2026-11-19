@@ -44,7 +44,8 @@ def fake_generate(state):
 
 
 def always_fail(*args, **kwargs):
-    return CheckReport(items=[CheckItem(code="C2", name="금지 표현", passed=False, detail="강제 실패")])
+    # C2 는 MCP 검사기 결과로 덮어쓰이므로, 강제 실패는 MCP 와 무관한 항목에 둔다.
+    return CheckReport(items=[CheckItem(code="A1", name="말투 일치", passed=False, detail="강제 실패")])
 
 
 def run_graph(answers):
