@@ -1,0 +1,81 @@
+{
+  "version": "1.0",
+  "notes": "검증 코드(app/checks, mcp_server)가 판정에 쓰는 규칙. 판정은 코드가 하고 LLM은 쓰지 않는다. 출처: 공정위 추천·보증 등에 관한 표시·광고 심사지침, 화장품법·식품표시광고법의 일반적 금지 유형을 MVP용으로 요약.",
+
+  "categories": {
+    "supported": ["생활용품", "전자·액세서리", "일반식품", "화장품"],
+    "rejected": ["건강기능식품", "의약품", "의료기기"],
+    "rejected_message": "건강기능식품·의약품·의료기기는 별도 법(심의·허가)이 적용되어 이 도구로 기획하지 않습니다."
+  },
+
+  "length": {
+    "allowed_sec": [15, 30, 45, 60],
+    "max_points_in_video": {"15": 2, "30": 3, "45": 4, "60": 5},
+    "scene_sec_integer": true,
+    "scene_total_must_equal_length": true
+  },
+
+  "hook": {
+    "max_sec": 3,
+    "product_visible_allowed": false
+  },
+
+  "product_exposure": {
+    "max_ratio": 0.3,
+    "how": "product_visible 이 true 인 씬 길이 합 ÷ 전체 길이"
+  },
+
+  "ad_disclosure": {
+    "where": ["title", "description_first_line"],
+    "allowed": ["[광고]", "#광고"],
+    "fail_if_alone": ["sponsored", "ad", "#ad", "#sponsored", "#내돈내산", "협찬 아님"],
+    "fail_if_alone_match": "대소문자 무시, 영문은 단어 단위로 일치할 때만 (예: 'ad' 는 'add' 'shadow' 에 걸리지 않음)",
+    "recommend_in_video": "영상 안 '유료광고 포함' 표시는 권장 안내만 하고 채점하지 않는다."
+  },
+
+  "forbidden_expressions": {
+    "match": "부분 문자열 일치, 공백 무시",
+    "common": [
+      {"word": "최고급", "reason": "근거 없는 최상급 표현", "suggestion": "고급스러운"},
+      {"word": "업계 최초", "reason": "근거 없는 최초 주장", "suggestion": "(삭제)"},
+      {"word": "업계 1위", "reason": "근거 없는 순위 주장", "suggestion": "(삭제)"},
+      {"word": "가장 저렴", "reason": "근거 없는 최상급 가격 비교", "suggestion": "부담 없는 가격"},
+      {"word": "세계 최고", "reason": "근거 없는 최상급 표현", "suggestion": "(삭제)"},
+      {"word": "100% 효과", "reason": "효과 보장 표현", "suggestion": "(삭제)"},
+      {"word": "효과 보장", "reason": "효과 보장 표현", "suggestion": "(삭제)"},
+      {"word": "부작용 없", "reason": "안전성 단정 표현", "suggestion": "순한 사용감"},
+      {"word": "무조건 사", "reason": "구매 강요 표현", "suggestion": "한번 써 볼 만해"},
+      {"word": "완벽한 제품", "reason": "근거 없는 절대 표현", "suggestion": "만족스러운 제품"},
+      {"word": "내돈내산", "reason": "협찬인데 직접 구매로 오인시키는 표현", "suggestion": "[광고] 표시"}
+    ],
+    "by_category": {
+      "화장품": [
+        {"word": "피부가 새로 태어", "reason": "피부 재생(의약품 효능) 오인", "suggestion": "피부가 정돈돼 보여요"},
+        {"word": "피부 재생", "reason": "의약품 효능 오인", "suggestion": "피부 결 정돈"},
+        {"word": "주름 제거", "reason": "의약품 효능 오인 (기능성 심사 범위 초과)", "suggestion": "주름 개선에 도움 (기능성 인증 시)"},
+        {"word": "여드름 치료", "reason": "질병 치료 효능 표방", "suggestion": "(삭제)"},
+        {"word": "아토피", "reason": "질병 관련 효능 표방", "suggestion": "(삭제)"},
+        {"word": "염증 완화", "reason": "의약품 효능 오인", "suggestion": "(삭제)"},
+        {"word": "모든 피부에 다 맞", "reason": "근거 없는 절대 표현", "suggestion": "대부분 피부에 무난"},
+        {"word": "흉터 제거", "reason": "의약품 효능 오인", "suggestion": "(삭제)"}
+      ],
+      "일반식품": [
+        {"word": "다이어트 효과", "reason": "일반식품의 기능성 표방", "suggestion": "가벼운 한 끼"},
+        {"word": "살 빠지", "reason": "일반식품의 기능성 표방", "suggestion": "가벼운 한 끼"},
+        {"word": "면역력", "reason": "일반식품의 기능성 표방", "suggestion": "(삭제)"},
+        {"word": "질병 예방", "reason": "질병 예방·치료 효능 표방", "suggestion": "(삭제)"},
+        {"word": "혈당", "reason": "일반식품의 기능성 표방", "suggestion": "(삭제)"},
+        {"word": "디톡스", "reason": "일반식품의 기능성 표방", "suggestion": "(삭제)"}
+      ],
+      "생활용품": [
+        {"word": "세균 100% 제거", "reason": "근거 없는 효능 단정", "suggestion": "깔끔하게 닦여요"},
+        {"word": "바이러스 제거", "reason": "근거 없는 살균 효능", "suggestion": "(삭제)"},
+        {"word": "인체에 완전 무해", "reason": "안전성 단정 표현", "suggestion": "(삭제)"}
+      ],
+      "전자·액세서리": [
+        {"word": "전자파 차단", "reason": "근거 없는 건강 효능", "suggestion": "(삭제)"},
+        {"word": "고장 안 나", "reason": "근거 없는 내구성 보장", "suggestion": "튼튼하게 만들어졌어요"}
+      ]
+    }
+  }
+}
