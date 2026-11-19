@@ -37,7 +37,9 @@ def run_agent(case: EvalCase) -> tuple[PlanOutput | None, dict]:
     cfg = {"configurable": {"thread_id": str(uuid.uuid4())}}
     cfg, trace_where = trace_config(cfg, name=f"eval-{case.case_id}", tags=["eval", case.channel_id])
     answers = {h.stage: h.answer for h in case.hitl_responses}
-    out = graph.invoke({"channel": load_channel(case.channel_id), "sponsorship": case.sponsorship}, cfg)
+    # 평가는 웹 검색을 항상 끈다: 재현성 + 기준선과 같은 입력 (service.md "평가")
+    out = graph.invoke({"channel": load_channel(case.channel_id), "sponsorship": case.sponsorship,
+                        "web_search": False}, cfg)
     while "__interrupt__" in out:
         stage = out["__interrupt__"][0].value["stage"]
         out = graph.invoke(Command(resume=answers.get(stage, "accept_suggestion")), cfg)

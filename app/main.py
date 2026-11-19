@@ -15,6 +15,7 @@ from langgraph.types import Command
 
 from app.graph import build_graph
 from app.tracing import trace_config
+from app.web import web_enabled
 from app.schemas import PlanOutput, load_channel, load_request
 
 STEP_NAMES = {
@@ -99,14 +100,15 @@ def show(out: PlanOutput, heading: str = "✅ 기획 완료") -> None:
 
 
 # --- 실행 ------------------------------------------------------------------------
-def run(path: str, auto: bool = False) -> dict:
+def run(path: str, auto: bool = False, web: bool | None = None) -> dict:
     req = load_request(path)
     graph = build_graph()
     cfg = {"configurable": {"thread_id": str(uuid.uuid4())}}
     cfg, trace_where = trace_config(cfg, name=req.sponsorship.product_name, tags=[req.channel_id])
-    payload = {"channel": load_channel(req.channel_id), "sponsorship": req.sponsorship}
+    use_web = web_enabled(web)
+    payload = {"channel": load_channel(req.channel_id), "sponsorship": req.sponsorship, "web_search": use_web}
 
-    print(f"📥 입력: {req.sponsorship.product_name} · 채널 {req.channel_id} · {req.sponsorship.length_sec}초")
+    print(f"📥 입력: {req.sponsorship.product_name} · 채널 {req.channel_id} · {req.sponsorship.length_sec}초 · 웹 검색 {'켜짐' if use_web else '꺼짐'}")
     while True:
         pending = None
         for chunk in graph.stream(payload, cfg, stream_mode="updates"):
@@ -144,8 +146,11 @@ def main() -> None:
     p = argparse.ArgumentParser(description="협찬 숏폼 기획 Agent")
     p.add_argument("input", help="입력 파일 (예: examples/normal.json)")
     p.add_argument("--auto", action="store_true", help="질문에 자동으로 답하기 (제안 수락, 1안)")
+    web = p.add_mutually_exclusive_group()
+    web.add_argument("--web", dest="web", action="store_true", default=None, help="웹 검색(Tavily) 켜기")
+    web.add_argument("--no-web", dest="web", action="store_false", help="웹 검색 끄기")
     args = p.parse_args()
-    run(args.input, auto=args.auto)
+    run(args.input, auto=args.auto, web=args.web)
 
 
 if __name__ == "__main__":

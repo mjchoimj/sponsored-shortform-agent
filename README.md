@@ -86,6 +86,20 @@ python -m app.main examples/trap_overflow.json
 python -m app.main examples/rejected.json
 ```
 
+### 웹 검색(Tavily) 켜고 끄기 (선택)
+
+Agent가 웹에서 제품 사양·특징·가격을 찾아 참고 자료에 보탭니다. 결과는 `knowledge/web_cache/`에 저장해, 같은 검색은 다시 하지 않습니다.
+
+| 방법 | 설정 |
+|---|---|
+| 실행할 때 (가장 우선) | `python -m app.main 입력.json --web` (켜기) · `--no-web` (끄기) |
+| `.env`에서 | `WEB_SEARCH=on` · `off` · `auto` |
+| 기본값 (`auto`) | `TAVILY_API_KEY`가 있으면 켜고, 없으면 끔 |
+
+- 키가 없어도 `--web`으로 켜면, 캐시에 저장된 검색어는 결과를 씁니다. 캐시에 없는 검색은 건너뛰고 기획을 계속 진행합니다.
+- **평가(`eval.run_eval`)는 항상 끕니다.** 결과를 다시 돌려도 같게 나오도록 하고, 기준선과 같은 입력으로 공정하게 비교하기 위해서입니다.
+- 실행 화면 첫 줄에 `웹 검색 켜짐/꺼짐`이 표시되고, `check_report.json`에 사용 여부와 검색어가 기록됩니다.
+
 결과는 `outputs/{시각}_{제품명}/`에 저장됩니다.
 - `기획안.md`: 기획안 요약 · 스토리보드 표 · 체크 리포트 · 업로드 패키지
 - `storyboard.json`: 스타일 시트 · 씬별 데이터 · 영문 이미지 프롬프트

@@ -88,6 +88,8 @@ def save_outputs(state: PlanState, base: Path | None = None) -> Path:
         "approved": state.get("approved", False),
         "revision": state.get("revision", 0),
         "final_action": state.get("final_action", ""),
+        "web_search": state.get("web_search", False),
+        "web_queries": state.get("web_queries", []),
         "human_feedback": state.get("human_feedback", []),
         "items": [i.model_dump() for i in report.items],
         "history": [[i.model_dump() for i in r.items] for r in state.get("check_history", [])],

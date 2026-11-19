@@ -23,6 +23,8 @@ FALLBACK_REGIONS = [
 ]
 LANGSMITH_API_KEY = os.getenv("LANGSMITH_API_KEY", "")  # P1, 선택
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")  # P2, 선택
+# 웹 검색 켜기/끄기: on | off | auto(키가 있으면 켬). 실행 옵션 --web / --no-web 이 이 값보다 우선.
+WEB_SEARCH = os.getenv("WEB_SEARCH", "auto").strip().lower()
 
 # --- 미들웨어 (T18) ------------------------------------------------------------
 RETRY_MAX = int(os.getenv("RETRY_MAX", "2"))          # 일시 오류 재시도 횟수 (같은 모델·리전)
@@ -30,6 +32,7 @@ RETRY_DELAY = float(os.getenv("RETRY_DELAY", "2"))    # 첫 대기(초), 매번 
 MAX_LLM_CALLS = int(os.getenv("MAX_LLM_CALLS", "60")) # 실행 1회당 생성 모델 호출 상한
 MAX_HUMAN_REVISIONS = 3                               # 최종 확인에서 받을 수 있는 수정 요청 횟수
 RESEARCH_MAX_MODEL_CALLS = 4                          # 자료 검색 에이전트 안의 모델 호출 상한
+RESEARCH_MAX_WEB_CALLS = 2                            # 웹 검색 도구 호출 상한 (T23)
 RESEARCH_MAX_TOOL_CALLS = 4                           # 자료 검색 도구 호출 상한
 
 # --- 모델 -------------------------------------------------------------------
