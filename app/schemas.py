@@ -87,10 +87,21 @@ class EvalCase(BaseModel):
 
 
 # --- 사전 점검 ----------------------------------------------------------------
+IssueAction = Literal[
+    "drop",  # 영상·설명란 모두에서 뺀다 (모순의 한쪽, 비율 요구 등)
+    "move_to_description",  # 영상에서 빼고 설명란으로
+    "rewrite",  # 고쳐 쓴 문장으로 바꾼다 (과장·콘셉트 충돌)
+    "split",  # 영상엔 줄인 문장, 설명란엔 원문 전체 (길이 초과)
+    "none",  # 안내만
+]
+
+
 class PrecheckIssue(BaseModel):
     type: TrapType
     detail: str = Field(description="무엇이 문제인지 한 문장")
     point_indices: list[int] = Field(default_factory=list, description="문제 포인트 위치(0부터)")
+    action: IssueAction = "none"
+    rewritten_point: str = Field(default="", description="rewrite·split 일 때 바꿔 쓸 문장")
     suggestion: str = Field(description="사용자에게 제안할 처리 방법")
     source: Literal["code", "llm"] = "llm"
 
