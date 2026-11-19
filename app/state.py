@@ -4,7 +4,15 @@ from __future__ import annotations
 
 from typing import TypedDict
 
-from app.schemas import ChannelProfile, Concept, ConceptOptions, PrecheckResult, Sponsorship
+from app.schemas import (
+    ChannelProfile,
+    Concept,
+    ConceptOptions,
+    PlanOutput,
+    PrecheckResult,
+    ScenePlan,
+    Sponsorship,
+)
 
 
 class PlanState(TypedDict, total=False):
@@ -21,3 +29,7 @@ class PlanState(TypedDict, total=False):
     knowledge: str  # 검색해 온 참고 문단
     concepts: ConceptOptions
     concept: Concept  # 사용자가 고른 안
+    # 계획 · 생성
+    plan: ScenePlan
+    output: PlanOutput
+    check_feedback: str  # 수정 루프에서 검증 실패 이유 (T12)
