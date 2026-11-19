@@ -30,3 +30,6 @@ eval/results/
 
 # Local trace logs (T19)
 logs/
+
+# Web search cache (T23) - may contain real brand pages; keep local
+knowledge/web_cache/

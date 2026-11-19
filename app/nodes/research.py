@@ -93,18 +93,21 @@ def research_node(state: PlanState) -> dict:
                 chunks.append(part)
 
     web_queries: list[str] = []
+    web_facts = ""
     if use_web:
         web_queries = _queries(msgs, "search_web")
         web = [w for w in _tool_results(msgs, "search_web") if not w.startswith("(웹 검색")]
         for q in web_queries:
             log.info("웹 검색 도구 호출: search_web(%r)", q)
         if web:
-            chunks.append(WEB_HEADER + "\n" + "\n\n".join(web))
+            web_facts = "\n\n".join(web)
+            chunks.append(WEB_HEADER + "\n" + web_facts)
 
     return {
         "knowledge": SEP.join(chunks),
         "rag_queries": queries[: config.RESEARCH_MAX_TOOL_CALLS],
         "web_queries": web_queries,
+        "web_facts": web_facts,
         "web_search": use_web,
     }
 

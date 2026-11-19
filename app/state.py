@@ -31,6 +31,7 @@ class PlanState(TypedDict, total=False):
     rag_queries: list[str]  # 모델이 도구로 검색한 질의
     web_search: bool  # 웹 검색(Tavily) 사용 여부 — 입력 때 정하면 그 값, 없으면 설정(app/web.py)
     web_queries: list[str]  # 웹 검색어
+    web_facts: str  # 웹 검색 결과 (생성 단계에 사실 근거로 전달)
     concepts: ConceptOptions
     concept: Concept  # 사용자가 고른 안
     # 계획 · 생성

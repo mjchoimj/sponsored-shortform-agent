@@ -61,13 +61,23 @@ PROMPT = """너는 인플루언서 채널의 협찬 숏폼 작가다. 아래 씬
 [채널] {channel_name} — {concept_text}, 톤: {tone}
 [콘셉트] {title} (훅: {hook_type}) — 첫 대사: {hook_line}
 [제품] {product_name} ({category}) — {product_desc}
-[영상 포인트]
+{web_facts}[영상 포인트]
 {video_points}
 [설명란 포인트]
 {description_points}
 [씬 배분 계획]
 {plan}
 {feedback}"""
+
+
+WEB_FACTS = """[웹에서 확인한 제품 정보 — 참고용]
+{facts}
+위 정보 사용 규칙:
+- 영상 포인트를 구체적으로 뒷받침하는 숫자·사실(사용 시간, 무게, 기능 이름 등)만 대사·자막에 1~2개 넣는다.
+  예: '한 번 충전으로 오래' → '한 번 충전에 최대 60분'.
+- 광고주 포인트·제품 설명과 다르면 광고주 쪽을 따른다. 출처가 공식 사이트가 아닌 개인 후기 내용은 쓰지 않는다.
+- 다른 제품과의 비교, '최고·1위' 같은 단정, 가격 할인 정보는 쓰지 않는다.
+"""
 
 
 def _ensure_ad_disclosure(pkg: UploadPackage) -> UploadPackage:
@@ -90,7 +100,7 @@ def _apply_plan(out: GenOutput, plan: ScenePlan) -> list[Scene] | None:
 
 
 def generate(ch: ChannelProfile, sp: Sponsorship, concept: Concept, plan: ScenePlan,
-             video_points: list[str], feedback: str = "") -> PlanOutput:
+             video_points: list[str], feedback: str = "", web_facts: str = "") -> PlanOutput:
     runner = gen_structured(GenOutput, temperature=0.7, max_tokens=8000, guard_category=sp.category)
     note = f"\n[이전 검증에서 실패한 점 — 반드시 고칠 것]\n{feedback}" if feedback else ""
     scenes = None
@@ -116,6 +126,7 @@ def generate(ch: ChannelProfile, sp: Sponsorship, concept: Concept, plan: SceneP
             description_points="\n".join(f"- {p}" for p in plan.description_points) or "(없음)",
             plan=plan.model_dump_json(indent=1, exclude={"description_points"}),
             feedback=note,
+            web_facts=WEB_FACTS.format(facts=web_facts) if web_facts else "",
         )
         out: GenOutput = runner.invoke(prompt)
         new = _apply_plan(out, plan)
@@ -145,6 +156,7 @@ def generate_node(state: PlanState) -> dict:
         state["channel"], sp, state["concept"], state["plan"],
         state.get("video_points", sp.promo_points),
         _feedback(state),
+        state.get("web_facts", ""),
     )
     return {"output": out}
 
