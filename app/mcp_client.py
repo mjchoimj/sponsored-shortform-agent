@@ -12,6 +12,7 @@ import logging
 import sys
 
 from langchain_mcp_adapters.client import MultiServerMCPClient
+from langchain_mcp_adapters.tools import load_mcp_tools
 
 from app import config
 
@@ -37,18 +38,24 @@ def _parse(result) -> dict:
     return json.loads(result)
 
 
-async def _call(tool_name: str, args: dict) -> dict:
+async def _call_many(calls: list[tuple[str, dict]]) -> list[dict]:
+    """서버를 한 번 띄워 도구 여러 개를 차례로 부른다."""
     client = MultiServerMCPClient(SERVERS)
-    tools = {t.name: t for t in await client.get_tools()}
-    return _parse(await tools[tool_name].ainvoke(args))
+    async with client.session("ad_rules") as session:
+        tools = {t.name: t for t in await load_mcp_tools(session)}
+        return [_parse(await tools[name].ainvoke(args)) for name, args in calls]
 
 
-def check_forbidden_via_mcp(text: str, category: str) -> dict | None:
+def check_rules_via_mcp(text: str, category: str, title: str, description: str) -> dict | None:
+    """금지 표현(C2) + 광고 표시(C1)를 MCP 검사기로 한 번에 검사한다. 실패하면 None."""
     try:
-        log.info("MCP 도구 호출: ad_rules.check_forbidden_expressions(category=%s, 글자 수=%d)", category, len(text))
-        out = asyncio.run(_call("check_forbidden_expressions", {"text": text, "category": category}))
-        log.info("MCP 결과: 금지 표현 %d건", out.get("count", 0))
-        return out
+        log.info("MCP 도구 호출: check_forbidden_expressions(category=%s, 글자 수=%d), check_ad_disclosure", category, len(text))
+        forbidden, ad = asyncio.run(_call_many([
+            ("check_forbidden_expressions", {"text": text, "category": category}),
+            ("check_ad_disclosure", {"title": title, "description": description}),
+        ]))
+        log.info("MCP 결과: 금지 표현 %d건, 광고 표시 %s", forbidden.get("count", 0), "통과" if ad.get("passed") else "실패")
+        return {"forbidden": forbidden, "ad": ad}
     except Exception as e:  # 서버 기동 실패 등 → 코드 판정으로 대체
         log.warning("MCP 검사기 연결 실패, 코드 판정으로 대체: %s", e)
         return None

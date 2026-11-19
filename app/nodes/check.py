@@ -10,23 +10,27 @@ from langgraph.types import interrupt
 
 from app import config
 from app.checks import CheckReport, run_checks
-from app.mcp_client import check_forbidden_via_mcp
+from app.mcp_client import check_rules_via_mcp
 from app.state import PlanState
 
 
 def _apply_mcp(report: CheckReport, state: PlanState) -> CheckReport:
-    """C2(금지 표현)는 MCP 광고 규정 검사기 결과로 판정한다. 연결 실패 시 코드 판정 유지."""
+    """C1(광고 표시)·C2(금지 표현)는 MCP 광고 규정 검사기 결과로 판정한다. 연결 실패 시 코드 판정 유지."""
     out = state["output"]
     pkg = out.upload_package
     text = "\n".join(
         [s.dialogue for s in out.storyboard.scenes] + [s.caption for s in out.storyboard.scenes]
         + [pkg.title, pkg.description, " ".join(pkg.hashtags)]
     )
-    res = check_forbidden_via_mcp(text, state["sponsorship"].category)
+    res = check_rules_via_mcp(text, state["sponsorship"].category, pkg.title, pkg.description)
     if res is None:
         return report
-    words = [f["word"] for f in res["found"]]
+    words = [f["word"] for f in res["forbidden"]["found"]]
+    ad = res["ad"]
     for item in report.items:
+        if item.code == "C1":
+            item.passed = bool(ad["passed"])
+            item.detail = f"[MCP 검사기] {ad['reason']}" + (f" → {ad['suggestion']}" if ad["suggestion"] else "")
         if item.code == "C2":
             item.passed = not words
             item.detail = f"[MCP 검사기] 금지 표현 발견: {words}" if words else "[MCP 검사기] 금지 표현 0건"
