@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import re
 import sys
+import threading
 from functools import lru_cache
 
 from chromadb.utils.embedding_functions import DefaultEmbeddingFunction
@@ -91,7 +92,16 @@ def _keyword_score(query: str, doc: Document) -> float:
     return len(q & _bigrams(doc.page_content)) / len(q) if q else 0.0
 
 
+# 검색 에이전트가 도구를 동시에 여러 번 부르면 Chroma 연결이 겹쳐 실패한다 → 한 번에 하나씩.
+_LOCK = threading.Lock()
+
+
 def search(query: str, k: int = 3) -> list[Document]:
+    with _LOCK:
+        return _search(query, k)
+
+
+def _search(query: str, k: int = 3) -> list[Document]:
     """벡터 순위 + 키워드(두 글자 단위) 순위를 합쳐(RRF) 상위 k개를 돌려준다.
 
     로컬 임베딩이 한국어에 약해서, 키워드 일치로 보완한다.

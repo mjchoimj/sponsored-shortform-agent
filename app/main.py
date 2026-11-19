@@ -14,6 +14,7 @@ import uuid
 from langgraph.types import Command
 
 from app.graph import build_graph
+from app.tracing import trace_config
 from app.schemas import PlanOutput, load_channel, load_request
 
 STEP_NAMES = {
@@ -87,6 +88,7 @@ def run(path: str, auto: bool = False) -> dict:
     req = load_request(path)
     graph = build_graph()
     cfg = {"configurable": {"thread_id": str(uuid.uuid4())}}
+    cfg, trace_where = trace_config(cfg, name=req.sponsorship.product_name, tags=[req.channel_id])
     payload = {"channel": load_channel(req.channel_id), "sponsorship": req.sponsorship}
 
     print(f"📥 입력: {req.sponsorship.product_name} · 채널 {req.channel_id} · {req.sponsorship.length_sec}초")
@@ -113,6 +115,7 @@ def run(path: str, auto: bool = False) -> dict:
             print(f"\n{mark} · 수정 {state.get('revision', 0)}회 · 최종 승인: {'예' if state.get('approved') else '아니오'}")
         if state.get("output_dir"):
             print(f"💾 저장: {state['output_dir']}")
+    print(f"🧭 실행 기록(Trace): {trace_where}")
     return state
 
 

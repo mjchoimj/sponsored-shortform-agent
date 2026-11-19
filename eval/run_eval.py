@@ -23,6 +23,7 @@ from langgraph.types import Command
 from app import config
 from app.graph import build_graph
 from app.llm import get_usage_log, start_usage_log
+from app.tracing import trace_config
 from app.schemas import EvalCase, PlanOutput, load_case, load_channel
 from eval.baseline import run_baseline
 from eval.grader import GROUPS, grade
@@ -34,6 +35,7 @@ SYSTEMS = ("agent", "baseline")
 def run_agent(case: EvalCase) -> tuple[PlanOutput | None, dict]:
     graph = build_graph()
     cfg = {"configurable": {"thread_id": str(uuid.uuid4())}}
+    cfg, trace_where = trace_config(cfg, name=f"eval-{case.case_id}", tags=["eval", case.channel_id])
     answers = {h.stage: h.answer for h in case.hitl_responses}
     out = graph.invoke({"channel": load_channel(case.channel_id), "sponsorship": case.sponsorship}, cfg)
     while "__interrupt__" in out:
@@ -45,6 +47,7 @@ def run_agent(case: EvalCase) -> tuple[PlanOutput | None, dict]:
         "unresolved": out.get("unresolved", False),
         "precheck_types": sorted({i.type for i in out["precheck"].issues}) if out.get("precheck") else [],
         "output_dir": out.get("output_dir"),
+        "trace": trace_where,
     }
     return out.get("output"), meta
 

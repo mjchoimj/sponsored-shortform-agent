@@ -27,3 +27,6 @@ eval/results/
 
 # Stray env files with keys (e.g. downloaded "xxx (2).env")
 *.env
+
+# Local trace logs (T19)
+logs/
