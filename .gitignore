@@ -24,3 +24,6 @@ Thumbs.db
 outputs/*
 !outputs/.gitkeep
 eval/results/
+
+# Stray env files with keys (e.g. downloaded "xxx (2).env")
+*.env

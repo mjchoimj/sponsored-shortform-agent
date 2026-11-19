@@ -24,6 +24,13 @@ FALLBACK_REGIONS = [
 LANGSMITH_API_KEY = os.getenv("LANGSMITH_API_KEY", "")  # P1, 선택
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")  # P2, 선택
 
+# --- 미들웨어 (T18) ------------------------------------------------------------
+RETRY_MAX = int(os.getenv("RETRY_MAX", "2"))          # 일시 오류 재시도 횟수 (같은 모델·리전)
+RETRY_DELAY = float(os.getenv("RETRY_DELAY", "2"))    # 첫 대기(초), 매번 2배
+MAX_LLM_CALLS = int(os.getenv("MAX_LLM_CALLS", "60")) # 실행 1회당 생성 모델 호출 상한
+RESEARCH_MAX_MODEL_CALLS = 4                          # 자료 검색 에이전트 안의 모델 호출 상한
+RESEARCH_MAX_TOOL_CALLS = 4                           # 자료 검색 도구 호출 상한
+
 # --- 모델 -------------------------------------------------------------------
 # 생성 모델: Agent 와 기준선이 같은 모델을 쓴다 (service.md "평가").
 GEN_MODEL = os.getenv("GEN_MODEL", "us.anthropic.claude-haiku-4-5-20251001-v1:0")

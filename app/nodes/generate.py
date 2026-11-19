@@ -86,7 +86,7 @@ def _apply_plan(out: GenOutput, plan: ScenePlan) -> list[Scene] | None:
 
 def generate(ch: ChannelProfile, sp: Sponsorship, concept: Concept, plan: ScenePlan,
              video_points: list[str], feedback: str = "") -> PlanOutput:
-    runner = gen_structured(GenOutput, temperature=0.7, max_tokens=8000)
+    runner = gen_structured(GenOutput, temperature=0.7, max_tokens=8000, guard_category=sp.category)
     note = f"\n[이전 검증에서 실패한 점 — 반드시 고칠 것]\n{feedback}" if feedback else ""
     for _ in range(2):
         prompt = PROMPT.format(

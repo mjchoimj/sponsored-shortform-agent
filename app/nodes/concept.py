@@ -59,7 +59,7 @@ def _problems(opts: ConceptOptions) -> list[str]:
 
 def make_concepts(ch: ChannelProfile, sp: Sponsorship, video_points: list[str],
                   description_points: list[str], knowledge: str) -> ConceptOptions:
-    runner = gen_structured(ConceptOptions, temperature=0.8)
+    runner = gen_structured(ConceptOptions, temperature=0.8, guard_category=sp.category)
     retry_note = ""
     for _ in range(2):
         prompt = PROMPT.format(

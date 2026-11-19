@@ -14,6 +14,7 @@ from langchain_aws import ChatBedrockConverse
 from pydantic import BaseModel
 
 from app import config
+from app.middleware import CallLimitExceeded, ForbiddenGuardMiddleware, call_limit, retry
 
 T = TypeVar("T", bound=BaseModel)
 log = logging.getLogger(__name__)
@@ -56,11 +57,15 @@ def invoke_with_fallback(models: list[str], build: Callable[[str, str], Any], pr
     for m in models:
         for r in regions:
             try:
-                out = build(m, r).invoke(prompt)
+                if role == "gen":
+                    call_limit.check(f"{m}@{r}")
+                out = retry(lambda: build(m, r).invoke(prompt), label=f"{role} {m}@{r}")
                 if failed:
                     log.warning("%s 전환: %s 실패 → %s@%s 사용", role, ", ".join(failed), m, r)
                 _record(role, m, r, failed)
                 return out
+            except CallLimitExceeded:
+                raise
             except Exception as e:  # 한도 초과·장애·형식 오류 → 다음 리전/모델
                 failed.append(f"{m}@{r}")
                 last_err = e
@@ -72,10 +77,14 @@ def gen_models() -> list[str]:
 
 
 class _GenRunner:
-    def __init__(self, schema: type[T], temperature: float, max_tokens: int):
+    def __init__(self, schema: type[T], temperature: float, max_tokens: int, guard_category: str | None):
         self.schema, self.temperature, self.max_tokens = schema, temperature, max_tokens
+        self.guard = ForbiddenGuardMiddleware(guard_category) if guard_category else None
 
     def invoke(self, prompt: Any) -> T:
+        return self.guard(self._invoke, prompt) if self.guard else self._invoke(prompt)
+
+    def _invoke(self, prompt: Any) -> T:
         return invoke_with_fallback(
             gen_models(),
             lambda m, r: chat(m, self.temperature, self.max_tokens, r).with_structured_output(self.schema),
@@ -84,7 +93,11 @@ class _GenRunner:
         )
 
 
-def gen_structured(schema: type[T], temperature: float = 0.7, max_tokens: int = 4096) -> _GenRunner:
-    """생성 모델(+ 예비 모델)로 schema 모양 답을 받는 실행기."""
+def gen_structured(schema: type[T], temperature: float = 0.7, max_tokens: int = 4096,
+                   guard_category: str | None = None) -> _GenRunner:
+    """생성 모델(+ 예비 모델)로 schema 모양 답을 받는 실행기.
+
+    모든 호출에 재시도·호출 상한 미들웨어가 걸린다. guard_category 를 주면 금지 표현 가드도 건다.
+    """
     config.require_aws_keys()
-    return _GenRunner(schema, temperature, max_tokens)
+    return _GenRunner(schema, temperature, max_tokens, guard_category)

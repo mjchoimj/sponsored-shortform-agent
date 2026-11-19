@@ -12,6 +12,7 @@ from pathlib import Path
 
 from app import config
 from app.llm import gen_structured
+from app.middleware import call_limit
 from app.schemas import ChannelProfile, EvalCase, PlanOutput, Sponsorship, load_case, load_channel
 
 RESULTS_DIR = config.EVAL_DIR / "results" / "baseline"
@@ -36,6 +37,7 @@ PROMPT = """너는 인플루언서 채널의 협찬 숏폼(9:16, {length_sec}초
 
 
 def run_baseline(ch: ChannelProfile, sp: Sponsorship) -> PlanOutput:
+    call_limit.reset()  # 실행마다 호출 상한을 새로 센다 (기준선은 금지 표현 가드 없이 — 구조 비교를 위해)
     prompt = PROMPT.format(
         length_sec=sp.length_sec,
         channel=ch.model_dump_json(indent=1),

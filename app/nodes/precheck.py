@@ -13,6 +13,7 @@ from langgraph.types import interrupt
 from pydantic import BaseModel, Field
 
 from app.llm import gen_structured
+from app.middleware import call_limit
 from app.rules import find_forbidden, load_rules, max_points
 from app.schemas import (
     ChannelProfile,
@@ -205,6 +206,7 @@ def run_precheck(ch: ChannelProfile, sp: Sponsorship) -> PrecheckResult:
 
 # --- 그래프 노드 ------------------------------------------------------------------
 def precheck_node(state: PlanState) -> dict:
+    call_limit.reset()  # 새 실행 시작 → 호출 횟수 상한을 다시 센다
     return {"precheck": run_precheck(state["channel"], state["sponsorship"])}
 
 
