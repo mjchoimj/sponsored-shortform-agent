@@ -1,4 +1,4 @@
-"""상태 그래프 — 사전 점검 → RAG → 콘셉트 → 계획 → 생성 → 검증 ⇄ (수정 루프) → 최종 승인."""
+"""상태 그래프 — 사전 점검 → RAG → 콘셉트 → 계획 → 생성 → 검증 ⇄ (수정 루프) → 최종 승인 → 저장."""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ from app.nodes.generate import generate_node
 from app.nodes.plan import plan_node
 from app.nodes.precheck import precheck_hitl_node, precheck_node
 from app.nodes.research import research_node
+from app.nodes.save import save_node
 from app.state import PlanState
 
 # 체크포인트에 저장해도 되는 우리 데이터 모델 (LangGraph 경고 방지)
@@ -39,6 +40,7 @@ def build_graph(checkpointer=None):
     g.add_node("check", check_node)
     g.add_node("revise", revise_node)  # 수정 루프: 계획부터 다시
     g.add_node("final_hitl", final_hitl_node)  # HITL ③
+    g.add_node("save", save_node)
 
     g.add_edge(START, "precheck")
     g.add_edge("precheck", "precheck_hitl")
@@ -50,7 +52,8 @@ def build_graph(checkpointer=None):
     g.add_edge("generate", "check")
     g.add_conditional_edges("check", route_after_check, {"revise": "revise", "final": "final_hitl"})
     g.add_edge("revise", "plan")
-    g.add_edge("final_hitl", END)
+    g.add_edge("final_hitl", "save")
+    g.add_edge("save", END)
 
     if checkpointer is None:
         checkpointer = InMemorySaver(serde=JsonPlusSerializer(allowed_msgpack_modules=_ALLOWED))

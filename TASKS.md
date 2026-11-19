@@ -77,7 +77,7 @@
   - 만들 것: `mcp_server/` FastMCP 서버(금지 표현 검사 도구 1개, `rules.json` 사용) + `langchain-mcp-adapters`로 Agent 실행 시 stdio 자동 기동
   - 완료 확인: MCP 서버 단독 실행 성공, Agent 실행 로그에 MCP 도구 호출이 보임
 
-- [ ] **T14 · 저장** (P0)
+- [x] **T14 · 저장** (P0)
   - 만들 것: `outputs/{시각}_{제품명}/기획안.md`, `storyboard.json`, `check_report.json`
   - 완료 확인: `examples/normal.json` 실행 후 세 파일 생성
 

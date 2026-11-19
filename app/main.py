@@ -27,6 +27,7 @@ STEP_NAMES = {
     "check": "자동 검증",
     "revise": "수정 (계획부터 다시)",
     "final_hitl": "최종 승인",
+    "save": "파일 저장",
 }
 
 AUTO_ANSWERS = {"precheck": "accept_suggestion", "concept": 1, "final": "approve"}
@@ -110,6 +111,8 @@ def run(path: str, auto: bool = False) -> dict:
         if rep is not None:
             mark = "✅ 검증 통과" if rep.passed else "⚠️ 미통과 표시"
             print(f"\n{mark} · 수정 {state.get('revision', 0)}회 · 최종 승인: {'예' if state.get('approved') else '아니오'}")
+        if state.get("output_dir"):
+            print(f"💾 저장: {state['output_dir']}")
     return state
 
 

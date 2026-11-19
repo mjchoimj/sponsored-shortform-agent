@@ -19,3 +19,7 @@ chroma_db/
 Thumbs.db
 .vscode/
 .idea/
+
+# Run results (examples for submission are added separately)
+outputs/*
+!outputs/.gitkeep

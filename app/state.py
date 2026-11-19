@@ -41,3 +41,4 @@ class PlanState(TypedDict, total=False):
     revision: int  # 수정 횟수 (0 = 첫 생성)
     unresolved: bool  # 최대 수정 후에도 미통과
     approved: bool  # 최종 승인 여부
+    output_dir: str  # 저장 폴더

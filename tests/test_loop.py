@@ -67,6 +67,7 @@ PATCHES = {
     "app.graph.concept_node": fake_concept,
     "app.graph.plan_node": fake_plan,
     "app.graph.generate_node": fake_generate,
+    "app.graph.save_node": lambda state: {"output_dir": "(테스트)"},
 }
 
 
