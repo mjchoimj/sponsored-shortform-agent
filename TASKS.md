@@ -13,7 +13,7 @@
 
 - [x] **T00 · 프로젝트 뼈대** (P0)
   - 만들 것: 폴더 `app/` `app/checks/` `mcp_server/` `knowledge/docs/` `examples/` `eval/channels/` `eval/cases/` `outputs/`, `requirements.txt`, `.env.example`, `app/config.py`(생성 모델·채점 모델 이름을 한 곳에서 지정)
-  - 라이브러리는 CLAUDE.md 표에 있는 것만: langchain, langchain-openai, langgraph, langchain-chroma, chromadb, mcp, langchain-mcp-adapters, pydantic, python-dotenv
+  - 라이브러리는 CLAUDE.md 표에 있는 것만: langchain, langchain-aws, boto3, langgraph, langchain-chroma, chromadb, mcp, langchain-mcp-adapters, pydantic, python-dotenv
   - 완료 확인: `pip install -r requirements.txt` 성공, `python -c "import app.config"` 오류 없음
 
 ## 1. 데이터 (AI 초안, 사람 검토)
@@ -38,7 +38,7 @@
 
 ## 2. 그래프 + HITL + 생성
 
-- [ ] **T05 · 데이터 모델** (P0)
+- [x] **T05 · 데이터 모델** (P0)
   - 만들 것: `app/schemas.py` — 채널 프로필, 협찬 정보, 사전 점검 결과, 콘셉트, 씬 배분 계획, 스토리보드(씬: 정수 초·대사·자막·`product_visible`·영문 이미지 프롬프트), 업로드 패키지
   - 완료 확인: `examples/normal.json`과 채널 1개를 모델로 읽어 오류 없음
 
