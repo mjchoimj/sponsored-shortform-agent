@@ -30,35 +30,40 @@ def get_usage_log() -> list[dict]:
     return list(getattr(_local, "calls", []))
 
 
-def _record(role: str, model: str, fallback_from: list[str]) -> None:
+def _record(role: str, model: str, region: str, fallback_from: list[str]) -> None:
     if hasattr(_local, "calls"):
-        _local.calls.append({"role": role, "model": model, "fallback_from": fallback_from})
+        _local.calls.append({"role": role, "model": model, "region": region, "fallback_from": fallback_from})
 
 
 # --- 모델 ---------------------------------------------------------------------------
-def chat(model: str, temperature: float, max_tokens: int) -> ChatBedrockConverse:
+def chat(model: str, temperature: float, max_tokens: int, region: str | None = None) -> ChatBedrockConverse:
     return ChatBedrockConverse(
         model=model,
-        region_name=config.AWS_REGION,
+        region_name=region or config.AWS_REGION,
         temperature=temperature,
         max_tokens=max_tokens,
     )
 
 
-def invoke_with_fallback(models: list[str], build: Callable[[str], Any], prompt: Any, role: str) -> Any:
-    """models 를 차례로 시도한다. build(model) 은 invoke 가능한 객체를 돌려준다."""
+def invoke_with_fallback(models: list[str], build: Callable[[str, str], Any], prompt: Any, role: str) -> Any:
+    """(모델, 리전)을 차례로 시도한다: 첫 모델을 모든 리전에서 → 다음 모델을 모든 리전에서.
+
+    build(model, region) 은 invoke 가능한 객체를 돌려준다.
+    """
+    regions = [config.AWS_REGION, *[r for r in config.FALLBACK_REGIONS if r != config.AWS_REGION]]
     failed: list[str] = []
     last_err: Exception | None = None
     for m in models:
-        try:
-            out = build(m).invoke(prompt)
-            if failed:
-                log.warning("%s 모델 전환: %s 실패 → %s 사용", role, ", ".join(failed), m)
-            _record(role, m, failed)
-            return out
-        except Exception as e:  # 한도 초과·장애·형식 오류 → 다음 모델
-            failed.append(m)
-            last_err = e
+        for r in regions:
+            try:
+                out = build(m, r).invoke(prompt)
+                if failed:
+                    log.warning("%s 전환: %s 실패 → %s@%s 사용", role, ", ".join(failed), m, r)
+                _record(role, m, r, failed)
+                return out
+            except Exception as e:  # 한도 초과·장애·형식 오류 → 다음 리전/모델
+                failed.append(f"{m}@{r}")
+                last_err = e
     raise last_err  # type: ignore[misc]
 
 
@@ -73,7 +78,7 @@ class _GenRunner:
     def invoke(self, prompt: Any) -> T:
         return invoke_with_fallback(
             gen_models(),
-            lambda m: chat(m, self.temperature, self.max_tokens).with_structured_output(self.schema),
+            lambda m, r: chat(m, self.temperature, self.max_tokens, r).with_structured_output(self.schema),
             prompt,
             role="gen",
         )

@@ -116,7 +116,7 @@ def _grade_llm(prompt: str) -> GradeLLM:
     config.require_aws_keys()
     return invoke_with_fallback(
         [config.GRADER_MODEL, *config.GRADER_MODEL_FALLBACKS],
-        lambda m: chat(m, config.GRADER_TEMPERATURE, 4000).with_structured_output(GradeLLM),
+        lambda m, r: chat(m, config.GRADER_TEMPERATURE, 4000, r).with_structured_output(GradeLLM),
         prompt,
         role="grader",
     )

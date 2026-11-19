@@ -88,6 +88,8 @@ def evaluate(system: str, case: EvalCase, fresh: bool) -> dict:
     gen_calls = [c for c in gen_calls if c["role"] == "gen"]
     result["models"] = {
         "gen": sorted({c["model"] for c in gen_calls}) or ["(이전 실행 결과 재사용 — 기록 없음)"],
+        "gen_regions": sorted({c["region"] for c in gen_calls}),
+        "grader_regions": sorted({c["region"] for c in grader_calls}),
         "gen_calls": len(gen_calls),
         "gen_fallbacks": sum(1 for c in gen_calls if c["fallback_from"]),
         "grader": sorted({c["model"] for c in grader_calls}),

@@ -92,7 +92,7 @@
   - Agent 코드(`app/`)는 이 파일·채점 프롬프트를 import 하지 않는다
   - 완료 확인: 결과 1건 채점 시 항목별 pass/fail + 근거 출력
 
-- [ ] **T17 · 평가 실행 (1차)** (P0)
+- [x] **T17 · 평가 실행 (1차)** (P0)
   - 만들 것: `eval/run_eval.py` — 20세트 × (Agent, 기준선), HITL 자동 응답, 전체·A·B·C·T1 점수표
   - 완료 확인: `python -m eval.run_eval` 이 점수표를 출력
 

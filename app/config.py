@@ -17,6 +17,10 @@ AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID", "")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY", "")
 # Bedrock 호출 리전. .env 의 AWS_DEFAULT_REGION 과 상관없이 이 값을 쓴다.
 AWS_REGION = os.getenv("BEDROCK_REGION", "us-east-1")
+# 한도에 걸리면 같은 모델을 이 리전들로 차례로 다시 시도한다 (모델을 바꾸기 전에).
+FALLBACK_REGIONS = [
+    r.strip() for r in os.getenv("BEDROCK_FALLBACK_REGIONS", "us-west-2").split(",") if r.strip()
+]
 LANGSMITH_API_KEY = os.getenv("LANGSMITH_API_KEY", "")  # P1, 선택
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")  # P2, 선택
 

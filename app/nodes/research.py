@@ -38,7 +38,7 @@ def research_node(state: PlanState) -> dict:
             video_points=state.get("video_points", sp.promo_points),
         )
     msg = invoke_with_fallback(
-        gen_models(), lambda m: chat(m, 0, 500).bind_tools([search_knowledge]), prompt, role="gen"
+        gen_models(), lambda m, r: chat(m, 0, 500, r).bind_tools([search_knowledge]), prompt, role="gen"
     )
     queries = [c["args"].get("query", "") for c in msg.tool_calls if c["name"] == "search_knowledge"]
     queries = [q for q in queries if q] or [q.format(category=sp.category) for q in DEFAULT_QUERIES]
