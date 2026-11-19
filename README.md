@@ -22,6 +22,7 @@
 
 - 케이스별 점수와, 케이스마다 생성·채점에 쓴 모델: [docs/results/eval_summary.md](docs/results/eval_summary.md)
 - 같은 제품 × 다른 채널 비교표(훅 · 첫 대사 · 제목): [docs/results/channel_compare.md](docs/results/channel_compare.md)
+- 실행 결과 예시(자취 채널 × 보풀 제거기 30초, 최종 검토에서 수정 요청 1회 반영): [docs/sample_output/기획안.md](docs/sample_output/기획안.md) · [storyboard.json](docs/sample_output/storyboard.json) · [check_report.json](docs/sample_output/check_report.json)
 
 ## 어떻게 동작하나
 

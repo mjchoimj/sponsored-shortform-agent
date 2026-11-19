@@ -116,5 +116,5 @@
 
 ## 8. 제출
 
-- [ ] **T27 · 제출**
+- [x] **T27 · 제출**
   - `git status`로 `.env`·API 키가 올라가지 않는지 확인 → GitHub push + ZIP

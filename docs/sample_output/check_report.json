@@ -1,0 +1,191 @@
+{
+  "passed": true,
+  "unresolved": false,
+  "approved": true,
+  "revision": 0,
+  "final_action": "approve",
+  "human_feedback": [
+    "제목에 가격 15,900원을 넣고, 마지막 씬 대사를 더 짧게 해 주세요"
+  ],
+  "items": [
+    {
+      "code": "A1",
+      "name": "말투 일치",
+      "passed": true,
+      "detail": "반말 문장 9/9 = 100% (기준 90%)"
+    },
+    {
+      "code": "A2",
+      "name": "시그니처 멘트",
+      "passed": true,
+      "detail": "오프닝·엔딩 멘트 모두 있음"
+    },
+    {
+      "code": "A3",
+      "name": "avoid 위반",
+      "passed": true,
+      "detail": "avoid 표현 0건"
+    },
+    {
+      "code": "B1",
+      "name": "포인트 반영",
+      "passed": true,
+      "detail": "포인트 3/3 반영"
+    },
+    {
+      "code": "C1",
+      "name": "광고 표시",
+      "passed": true,
+      "detail": "[MCP 검사기] 제목, 설명란 첫 줄에 광고 표시 있음"
+    },
+    {
+      "code": "C2",
+      "name": "금지 표현",
+      "passed": true,
+      "detail": "[MCP 검사기] 금지 표현 0건"
+    },
+    {
+      "code": "C3",
+      "name": "제품 노출",
+      "passed": true,
+      "detail": "제품 노출 9/30초 = 30% (상한 30%)"
+    },
+    {
+      "code": "C4",
+      "name": "첫 씬",
+      "passed": true,
+      "detail": "첫 씬 3초, 제품 없음"
+    },
+    {
+      "code": "C5",
+      "name": "길이",
+      "passed": true,
+      "detail": "씬 합 30초 / 목표 30초"
+    }
+  ],
+  "history": [
+    [
+      {
+        "code": "A1",
+        "name": "말투 일치",
+        "passed": true,
+        "detail": "반말 문장 11/11 = 100% (기준 90%)"
+      },
+      {
+        "code": "A2",
+        "name": "시그니처 멘트",
+        "passed": true,
+        "detail": "오프닝·엔딩 멘트 모두 있음"
+      },
+      {
+        "code": "A3",
+        "name": "avoid 위반",
+        "passed": true,
+        "detail": "avoid 표현 0건"
+      },
+      {
+        "code": "B1",
+        "name": "포인트 반영",
+        "passed": true,
+        "detail": "포인트 3/3 반영"
+      },
+      {
+        "code": "C1",
+        "name": "광고 표시",
+        "passed": true,
+        "detail": "[MCP 검사기] 제목, 설명란 첫 줄에 광고 표시 있음"
+      },
+      {
+        "code": "C2",
+        "name": "금지 표현",
+        "passed": true,
+        "detail": "[MCP 검사기] 금지 표현 0건"
+      },
+      {
+        "code": "C3",
+        "name": "제품 노출",
+        "passed": true,
+        "detail": "제품 노출 9/30초 = 30% (상한 30%)"
+      },
+      {
+        "code": "C4",
+        "name": "첫 씬",
+        "passed": true,
+        "detail": "첫 씬 3초, 제품 없음"
+      },
+      {
+        "code": "C5",
+        "name": "길이",
+        "passed": true,
+        "detail": "씬 합 30초 / 목표 30초"
+      }
+    ],
+    [
+      {
+        "code": "A1",
+        "name": "말투 일치",
+        "passed": true,
+        "detail": "반말 문장 9/9 = 100% (기준 90%)"
+      },
+      {
+        "code": "A2",
+        "name": "시그니처 멘트",
+        "passed": true,
+        "detail": "오프닝·엔딩 멘트 모두 있음"
+      },
+      {
+        "code": "A3",
+        "name": "avoid 위반",
+        "passed": true,
+        "detail": "avoid 표현 0건"
+      },
+      {
+        "code": "B1",
+        "name": "포인트 반영",
+        "passed": true,
+        "detail": "포인트 3/3 반영"
+      },
+      {
+        "code": "C1",
+        "name": "광고 표시",
+        "passed": true,
+        "detail": "[MCP 검사기] 제목, 설명란 첫 줄에 광고 표시 있음"
+      },
+      {
+        "code": "C2",
+        "name": "금지 표현",
+        "passed": true,
+        "detail": "[MCP 검사기] 금지 표현 0건"
+      },
+      {
+        "code": "C3",
+        "name": "제품 노출",
+        "passed": true,
+        "detail": "제품 노출 9/30초 = 30% (상한 30%)"
+      },
+      {
+        "code": "C4",
+        "name": "첫 씬",
+        "passed": true,
+        "detail": "첫 씬 3초, 제품 없음"
+      },
+      {
+        "code": "C5",
+        "name": "길이",
+        "passed": true,
+        "detail": "씬 합 30초 / 목표 30초"
+      }
+    ]
+  ],
+  "precheck": {
+    "rejected": false,
+    "reject_reason": "",
+    "issues": [],
+    "video_points": [
+      "USB-C 충전식이라 건전지 필요 없음",
+      "3단 높이 조절로 니트도 안전하게",
+      "보풀 통이 커서 비우기 편함"
+    ],
+    "description_points": []
+  }
+}

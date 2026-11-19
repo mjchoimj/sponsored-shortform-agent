@@ -1,0 +1,90 @@
+{
+  "product": "포근 보풀 제거기",
+  "channel_id": "CH1",
+  "length_sec": 30,
+  "concept": {
+    "concept_no": 1,
+    "title": "니트 보풀 문제, 이 방법이 정답",
+    "hook_type": "문제 제기",
+    "hook_line": "니트 입을 때마다 보풀이 솟아나는데, 너무 거슬려",
+    "summary": "니트 보풀의 불편함을 언급한 후, 기존 방법(손으로 뜯기, 면도기 등)의 한계를 설명하고, 포근 보풀 제거기의 3단 높이 조절과 충전식 편리함을 자취생 입장에서 소개한다. 마지막으로 건전지 비용을 아끼는 효과까지 덧붙인다."
+  },
+  "storyboard": {
+    "style_sheet": {
+      "visual_style": "bright, casual, relatable self-care vlog aesthetic with close-up product demonstration shots",
+      "color_palette": "warm neutrals, soft pastels, pops of mint green accent color",
+      "lighting": "natural daylight with soft studio fill lighting",
+      "aspect_ratio": "9:16",
+      "character": ""
+    },
+    "scenes": [
+      {
+        "scene_no": 1,
+        "seconds": 3,
+        "visual": "자취생이 검은 니트를 입고 거울 앞에서 보풀을 바라보며 한숨 짓는 모습",
+        "dialogue": "니트 입을 때마다 보풀이 솟아나는데, 자취 5년 차 꿀팁 들어간다.",
+        "caption": "니트 보풀 때문에 매번 스트레스...",
+        "product_visible": false,
+        "image_prompt": "A frustrated young woman in a black knit sweater looking at pilling fabric in the mirror, morning sunlight streaming through a small studio apartment window, close-up on her disappointed expression, warm neutral tones, cozy but slightly messy room background"
+      },
+      {
+        "scene_no": 2,
+        "seconds": 18,
+        "visual": "기존 보풀 제거 방법들을 시도하는 장면: 손으로 뜯기, 면도기 사용, 빗질 등. 각 방법의 문제점이 나타남 (불편함, 손상, 시간 소요)",
+        "dialogue": "손으로 뜯으면 옷이 망가지고, 면도기는 위험하고, 빗으로 하면 진짜 시간 오래 걸린단 말이야. 자취생 입장에선 진짜 골치 아파.",
+        "caption": "기존 방법들은 다 문제가 있어",
+        "product_visible": false,
+        "image_prompt": "Montage of failed pilling removal attempts: hands plucking fabric, someone carefully using a razor blade looking nervous, frustrated combing motion on sweater, close-ups showing inefficiency and potential damage, warm lighting, apartment setting, tired expression"
+      },
+      {
+        "scene_no": 3,
+        "seconds": 2,
+        "visual": "포근 보풀 제거기를 손에 들고 니트에 부드럽게 대는 장면. 높이 조절 버튼을 조작하며 3단 높이를 보여주고, 제거기가 안전하게 작동하는 모습",
+        "dialogue": "높이 조절이 되니까 니트도 안전해.",
+        "caption": "3단 높이 조절로 섬세하게",
+        "product_visible": true,
+        "image_prompt": "Close-up of hands holding a sleek mint-green pilling remover device, gently gliding it over black knit fabric, fingers adjusting height control buttons showing three different settings, safe and gentle motion, soft studio lighting highlighting the device design, satisfaction on user's face"
+      },
+      {
+        "scene_no": 4,
+        "seconds": 2,
+        "visual": "보풀 제거기로 니트를 정리한 후 깔끔해진 옷의 모습. 제거기의 보풀 통을 열어서 모인 보풀을 보여주고, 탈착식 통을 비우는 편리한 과정",
+        "dialogue": "보풀 통이 커서 비우기도 편하고.",
+        "caption": "보풀 통이 커서 정말 편함",
+        "product_visible": true,
+        "image_prompt": "Before and after of knit fabric looking fresh and smooth, close-up of detachable lint collection container being removed from device, showing accumulated pilling inside, user emptying the container with ease, satisfying result, warm lighting, clean apartment setting"
+      },
+      {
+        "scene_no": 5,
+        "seconds": 2,
+        "visual": "제거기를 USB-C 충전기에 연결하는 장면. 충전 중인 모습과 함께 '건전지 필요 없음'이라는 텍스트가 화면에 나타남",
+        "dialogue": "USB-C 충전식이라 건전지도 안 사도 돼.",
+        "caption": "건전지 비용까지 절약",
+        "product_visible": true,
+        "image_prompt": "Close-up of pilling remover device being plugged into USB-C charger, glowing indicator light showing charging status, device sitting on apartment desk with laptop visible in background, cost-saving visual metaphor, warm ambient lighting"
+      },
+      {
+        "scene_no": 6,
+        "seconds": 3,
+        "visual": "깔끔하게 정리된 니트를 입고 만족스러워하는 자취생의 모습. 제거기를 옆에 놓고 포즈를 취함",
+        "dialogue": "15,900원이면 충분해. 다음 꿀팁에서 보자.",
+        "caption": "이제 니트도 걱정 없어",
+        "product_visible": true,
+        "image_prompt": "Young woman wearing the freshly cleaned black knit sweater, looking satisfied and confident, pilling remover device visible on nearby table, bright smile, well-lit apartment, cozy and clean environment, vertical composition emphasizing the final result"
+      }
+    ]
+  },
+  "upload_package": {
+    "title": "[광고] 니트 보풀 때문에 스트레스? 15,900원이면 끝!",
+    "description": "#광고 포근 보풀 제거기 협찬을 받아 제작했습니다.\n\n자취생 필수템! 손상 없이 안전하게 니트 보풀을 제거하는 방법을 알려드려요.\n\n💡 영상 포인트\n• USB-C 충전식이라 건전지 필요 없음\n• 3단 높이 조절로 니트도 안전하게\n• 보풀 통이 커서 비우기 편함",
+    "hashtags": [
+      "#광고",
+      "#자취꿀팁",
+      "#니트보풀제거",
+      "#생활용품",
+      "#자취생필수템",
+      "#가성비"
+    ],
+    "ad_disclosure": "[광고]"
+  }
+}
