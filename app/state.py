@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TypedDict
 
-from app.schemas import ChannelProfile, PrecheckResult, Sponsorship
+from app.schemas import ChannelProfile, Concept, ConceptOptions, PrecheckResult, Sponsorship
 
 
 class PlanState(TypedDict, total=False):
@@ -17,3 +17,7 @@ class PlanState(TypedDict, total=False):
     description_points: list[str]
     stopped: bool  # 거절·취소로 멈췄는지
     stop_reason: str
+    # RAG + 콘셉트
+    knowledge: str  # 검색해 온 참고 문단
+    concepts: ConceptOptions
+    concept: Concept  # 사용자가 고른 안
