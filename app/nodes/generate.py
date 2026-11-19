@@ -6,6 +6,8 @@
 
 from __future__ import annotations
 
+import re
+
 from pydantic import BaseModel, Field
 
 from app.llm import gen_structured
@@ -89,6 +91,56 @@ def _ensure_ad_disclosure(pkg: UploadPackage) -> UploadPackage:
     return pkg
 
 
+def _squash(text: str) -> str:
+    return re.sub(r"[^0-9a-zA-Z가-힣]", "", text)
+
+
+def _bigrams(text: str) -> set[str]:
+    t = _squash(text)
+    return {t[i:i + 2] for i in range(len(t) - 1)}
+
+
+def _sentences(text: str) -> list[str]:
+    return [s.strip() for s in re.split(r"(?<=[.!?~])\s+", text.strip()) if s.strip()]
+
+
+def _put_signature(dialogue: str, sig: str, at_end: bool) -> str:
+    """대사에 시그니처 멘트를 원문 그대로 넣는다.
+
+    모델이 비슷하게 바꿔 쓴 문장(두 글자 단위 겹침 50% 이상)이 있으면 그 문장을 원문으로 바꾸고,
+    없으면 맨 앞(오프닝) 또는 맨 끝(엔딩)에 붙인다.
+    """
+    sig_parts = _sentences(sig) or [sig]
+    target = _bigrams(sig)
+    kept, replaced = [], False
+    for s in _sentences(dialogue):
+        b = _bigrams(s)
+        if target and b and len(b & target) / len(b) >= 0.5:
+            if not replaced:
+                kept.extend(sig_parts)
+                replaced = True
+            continue  # 바꿔 쓴 시그니처 문장은 원문으로 대체
+        kept.append(s)
+    if not replaced:
+        kept = kept + sig_parts if at_end else sig_parts + kept
+    return " ".join(kept)
+
+
+def ensure_signatures(scenes: list[Scene], plan: ScenePlan, ch: ChannelProfile) -> list[Scene]:
+    """오프닝·엔딩 멘트가 대사·자막에 원문 그대로 없으면 코드가 넣는다 (A2 보정, 광고 표시 보정과 같은 방식).
+
+    넣는 곳: 계획에서 signature 로 정한 씬. 없으면 오프닝은 1번 씬, 엔딩은 마지막 씬.
+    """
+    script = _squash(" ".join(s.dialogue + " " + s.caption for s in scenes))
+    marks = {p.scene_no: p.signature for p in plan.scenes}
+    for kind, sig, at_end in (("opening", ch.signature_opening, False), ("ending", ch.signature_ending, True)):
+        if not sig or _squash(sig) in script:
+            continue
+        idx = next((i for i, s in enumerate(scenes) if marks.get(s.scene_no) == kind), 0 if not at_end else len(scenes) - 1)
+        scenes[idx] = scenes[idx].model_copy(update={"dialogue": _put_signature(scenes[idx].dialogue, sig, at_end)})
+    return scenes
+
+
 def _apply_plan(out: GenOutput, plan: ScenePlan) -> list[Scene] | None:
     if len(out.scenes) != len(plan.scenes):
         return None
@@ -145,7 +197,7 @@ def generate(ch: ChannelProfile, sp: Sponsorship, concept: Concept, plan: SceneP
 
     return PlanOutput(
         concept=concept,
-        storyboard=Storyboard(style_sheet=out.style_sheet, scenes=scenes),
+        storyboard=Storyboard(style_sheet=out.style_sheet, scenes=ensure_signatures(scenes, plan, ch)),
         upload_package=_ensure_ad_disclosure(out.upload_package),
     )
 
