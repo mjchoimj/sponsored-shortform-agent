@@ -27,6 +27,7 @@ class PlanState(TypedDict, total=False):
     stop_reason: str
     # RAG + 콘셉트
     knowledge: str  # 검색해 온 참고 문단
+    rag_queries: list[str]  # 모델이 도구로 검색한 질의
     concepts: ConceptOptions
     concept: Concept  # 사용자가 고른 안
     # 계획 · 생성
