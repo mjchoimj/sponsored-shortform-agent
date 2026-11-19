@@ -1,7 +1,7 @@
 """프로젝트 설정 — 모델 이름과 경로를 한 곳에서 관리한다.
 
-API 키와 모델 이름은 .env 에서 읽는다. 모델을 바꾸려면 .env 에
-GEN_MODEL / GRADER_MODEL / EMBEDDING_MODEL 을 적으면 된다.
+LLM 은 AWS Bedrock 을 쓴다. 접속 키와 모델 이름은 .env 에서 읽는다.
+모델을 바꾸려면 .env 에 GEN_MODEL / GEN_MODEL_FALLBACKS / GRADER_MODEL 을 적으면 된다.
 """
 
 import os
@@ -13,23 +13,26 @@ ROOT = Path(__file__).resolve().parent.parent
 load_dotenv(ROOT / ".env")
 
 # --- API 키 -----------------------------------------------------------------
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID", "")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY", "")
+# Bedrock 호출 리전. .env 의 AWS_DEFAULT_REGION 과 상관없이 이 값을 쓴다.
+AWS_REGION = os.getenv("BEDROCK_REGION", "us-east-1")
 LANGSMITH_API_KEY = os.getenv("LANGSMITH_API_KEY", "")  # P1, 선택
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")  # P2, 선택
 
 # --- 모델 -------------------------------------------------------------------
 # 생성 모델: Agent 와 기준선이 같은 모델을 쓴다 (service.md "평가").
-GEN_MODEL = os.getenv("GEN_MODEL", "gpt-4.1-mini")
+GEN_MODEL = os.getenv("GEN_MODEL", "us.anthropic.claude-haiku-4-5-20251001-v1:0")
 # 생성 모델이 실패(한도·장애)하면 차례로 시도할 대체 모델.
 GEN_MODEL_FALLBACKS = [
     m.strip()
-    for m in os.getenv("GEN_MODEL_FALLBACKS", "gpt-4o-mini").split(",")
+    for m in os.getenv("GEN_MODEL_FALLBACKS", "us.amazon.nova-2-lite-v1:0").split(",")
     if m.strip()
 ]
 # 채점 모델: 한 단계 위, temperature 0. Agent(app/)는 이 값을 쓰지 않는다.
-GRADER_MODEL = os.getenv("GRADER_MODEL", "gpt-4.1")
+GRADER_MODEL = os.getenv("GRADER_MODEL", "us.anthropic.claude-sonnet-4-6")
 GRADER_TEMPERATURE = 0
-EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
+# 임베딩: 계정에 Bedrock 임베딩 모델이 없어 Chroma 기본 로컬 임베딩을 쓴다 (키 불필요).
 
 # --- 경로 -------------------------------------------------------------------
 KNOWLEDGE_DIR = ROOT / "knowledge"
@@ -44,9 +47,9 @@ OUTPUTS_DIR = ROOT / "outputs"
 MAX_REVISIONS = 3
 
 
-def require_openai_key() -> None:
-    """OpenAI 키가 없으면 쉬운 안내와 함께 멈춘다."""
-    if not OPENAI_API_KEY:
+def require_aws_keys() -> None:
+    """AWS 키가 없으면 쉬운 안내와 함께 멈춘다."""
+    if not (AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY):
         raise SystemExit(
-            "OPENAI_API_KEY 가 없습니다. .env 파일에 OPENAI_API_KEY=sk-... 를 추가해 주세요."
+            "AWS 키가 없습니다. .env 파일에 AWS_ACCESS_KEY_ID 와 AWS_SECRET_ACCESS_KEY 를 넣어 주세요."
         )

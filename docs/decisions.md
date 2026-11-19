@@ -5,7 +5,7 @@
 | # | 결정 |
 |---|---|
 | Q1 | 쇼츠·릴스 공통, 길이는 15/30/45/60초 선택, 씬 길이는 정수 초, 훅 ≤ 3초 |
-| Q2 | OpenAI 사용 |
+| Q2 | ~~OpenAI 사용~~ → Q48에서 AWS Bedrock으로 변경 |
 | Q3 | 터미널 실행, HITL은 LangGraph `interrupt` |
 | Q4 | 지원 카테고리 4종, 건강기능식품·의약품·의료기기는 거절 |
 | Q5 | 지식 자료 3종 (📕 공식 규정 / 📗 노하우 / 📘 규칙 JSON) |
@@ -26,7 +26,7 @@
 | Q20 | Middleware 3종 (금지 표현 가드, 호출·비용 상한, 재시도) |
 | Q21 | Planning = 씬 배분 계획 |
 | Q22 | 항목별 통과/실패 평균, 성공 = Agent ≥ 0.9이면서 기준선보다 높음 |
-| Q23 | `.env.example`만 공개, OpenAI 키 필수, Tavily·LangSmith 키 선택 |
+| Q23 | `.env.example`만 공개, AWS 액세스 키 필수(Q48), Tavily·LangSmith 키 선택 |
 | Q24 | Tavily 키가 없으면 데모 3종은 캐시, 그 밖의 제품은 리서치 생략 |
 | Q25 | LangSmith 공개 링크와 스크린샷을 README에 첨부 |
 | Q26 | Python 3.11 이상 + pip, MCP 서버 자동 기동 |
@@ -47,6 +47,7 @@
 | Q42 | "같은 제품 × 다른 채널" 비교표를 README에 싣고, 점수에는 넣지 않음 |
 | Q43 | Tavily는 P2, Middleware는 P1로 이동 |
 | Q44 | (Q47에서 삭제 — 시간 계획 제외) |
-| Q45 | 사전 준비는 OpenAI 키와 LangSmith 가입만 |
+| Q45 | 사전 준비는 AWS 액세스 키(Q48)와 LangSmith 가입만 |
 | Q46 | 로컬 벡터 DB는 Chroma |
 | Q47 | 문서 전체에서 시간 계획(날짜·시간대)을 빼고 P0 → P1 → P2 순서만 남김 |
+| Q48 | (2026-11-19) LLM을 AWS Bedrock(us-east-1, `us.` 모델, `BEDROCK_REGION`으로 지정)으로 변경. 생성 Claude Haiku 4.5, 예비 Nova 2 Lite, 채점 Claude Sonnet 4.6. 임베딩은 계정에 Bedrock 임베딩 모델이 없어 Chroma 기본 로컬 임베딩 사용. 라이브러리 `langchain-openai` → `langchain-aws`·`boto3` (사용자 허락) |

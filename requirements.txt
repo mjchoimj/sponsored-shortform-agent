@@ -1,6 +1,7 @@
 # Agent / LLM
 langchain>=1.0
-langchain-openai>=1.0
+langchain-aws>=1.0
+boto3>=1.35
 langgraph>=1.0
 
 # RAG (local vector DB)

@@ -35,7 +35,7 @@ flowchart LR
 | `eval/` | 평가셋 20세트, 가상 채널 4개, 기준선, 채점기 |
 | `examples/` | 데모 입력 3종 |
 
-필요한 것: Python 3.11+, `OPENAI_API_KEY`. 선택: `LANGSMITH_API_KEY`(Trace), `TAVILY_API_KEY`(웹 리서치).
+필요한 것: Python 3.11+, AWS Bedrock 액세스 키(`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`). 선택: `LANGSMITH_API_KEY`(Trace), `TAVILY_API_KEY`(웹 리서치).
 
 ```
 pip install -r requirements.txt

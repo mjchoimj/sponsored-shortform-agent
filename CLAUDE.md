@@ -9,15 +9,15 @@
 | 영역 | 사용 기술 |
 |---|---|
 | 언어 | Python 3.11+, 설치는 `pip install -r requirements.txt` |
-| LLM | OpenAI (`langchain-openai`). 생성 모델(경량)과 채점 모델(상위)을 설정 한 곳에서 지정 |
+| LLM | AWS Bedrock (`langchain-aws`, `boto3`, 리전 us-east-1, `us.` 모델). 생성 Claude Haiku 4.5(예비 Nova 2 Lite), 채점 Claude Sonnet 4.6. 모델은 `app/config.py` 한 곳에서 지정 |
 | Agent 프레임워크 | LangChain, LangGraph (상태 그래프, 수정 루프, `interrupt` 기반 HITL) |
-| RAG | 로컬 벡터 DB **Chroma** (`langchain-chroma`, `chroma_db/`에 저장) + OpenAI 임베딩, 검색은 Tool Calling 도구로 노출 |
+| RAG | 로컬 벡터 DB **Chroma** (`langchain-chroma`, `chroma_db/`에 저장) + Chroma 기본 로컬 임베딩(키 불필요), 검색은 Tool Calling 도구로 노출 |
 | MCP | Python MCP SDK(FastMCP)로 만든 자체 "광고 규정 검사기" 서버, `langchain-mcp-adapters`로 연결 (stdio, Agent 실행 시 자동 기동) |
 | Middleware | LangChain middleware: 재시도, 호출 횟수 제한, 금지 표현 가드 (P1) |
 | 구조화 출력 | Pydantic 모델 |
 | Trace | LangSmith (키 없으면 로컬 로그) (P1) |
 | 웹 검색 | Tavily + 캐시 (P2) |
-| 설정 | `python-dotenv`, `.env` (`OPENAI_API_KEY` 필수, `LANGSMITH_API_KEY`·`TAVILY_API_KEY` 선택) |
+| 설정 | `python-dotenv`, `.env` (`AWS_ACCESS_KEY_ID`·`AWS_SECRET_ACCESS_KEY`·`BEDROCK_REGION`(기본 us-east-1), `LANGSMITH_API_KEY`·`TAVILY_API_KEY` 선택) |
 필요 시 모델은 조정해서 사용하거나 복수의 모델을 상황에 맞춰 변경하여 중단없이 쓸 수 있게 한다.
 
 ## 작업 규칙
