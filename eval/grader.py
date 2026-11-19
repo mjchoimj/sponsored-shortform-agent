@@ -14,11 +14,11 @@ import re
 import sys
 from pathlib import Path
 
-from langchain_aws import ChatBedrockConverse
 from pydantic import BaseModel, Field
 
 from app import config
 from app.checks import run_checks
+from app.llm import chat, get_usage_log, invoke_with_fallback
 from app.rules import load_rules
 from app.schemas import ChannelProfile, EvalCase, PlanOutput, load_case, load_channel
 
@@ -112,14 +112,14 @@ def quote_ok(quote: str, text: str) -> bool:
 
 
 # --- 채점 ------------------------------------------------------------------------
-def _grader():
+def _grade_llm(prompt: str) -> GradeLLM:
     config.require_aws_keys()
-    return ChatBedrockConverse(
-        model=config.GRADER_MODEL,
-        region_name=config.AWS_REGION,
-        temperature=config.GRADER_TEMPERATURE,
-        max_tokens=4000,
-    ).with_structured_output(GradeLLM)
+    return invoke_with_fallback(
+        [config.GRADER_MODEL, *config.GRADER_MODEL_FALLBACKS],
+        lambda m: chat(m, config.GRADER_TEMPERATURE, 4000).with_structured_output(GradeLLM),
+        prompt,
+        role="grader",
+    )
 
 
 def b1_targets(case: EvalCase) -> list[int]:
@@ -151,7 +151,8 @@ def grade(case: EvalCase, ch: ChannelProfile, out: PlanOutput) -> dict:
         point_ids=", ".join(map(str, targets)),
         trap_part=TRAP_PART.format(type=trap.type, detail=trap.trap_detail, handling=trap.expected_handling) if trap else "",
     )
-    llm: GradeLLM = _grader().invoke(prompt)
+    llm: GradeLLM = _grade_llm(prompt)
+    grader_model = next((c["model"] for c in reversed(get_usage_log()) if c["role"] == "grader"), config.GRADER_MODEL)
 
     for c in ("A1", "A3", "C1", "C2", "C4", "C5"):
         items[c] = {"passed": code[c].passed, "detail": code[c].detail, "by": "code"}
@@ -210,7 +211,7 @@ def grade(case: EvalCase, ch: ChannelProfile, out: PlanOutput) -> dict:
             "by": "llm+quote",
         }
 
-    return {"case_id": case.case_id, "items": items, **scores(items)}
+    return {"case_id": case.case_id, "grader_model": grader_model, "items": items, **scores(items)}
 
 
 def scores(items: dict[str, dict]) -> dict:

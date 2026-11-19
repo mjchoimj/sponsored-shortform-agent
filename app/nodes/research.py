@@ -8,9 +8,7 @@ from __future__ import annotations
 
 import logging
 
-from langchain_aws import ChatBedrockConverse
-
-from app import config
+from app.llm import chat, gen_models, invoke_with_fallback
 from app.rag import search_knowledge
 from app.state import PlanState
 
@@ -30,11 +28,7 @@ DEFAULT_QUERIES = ["{category} 금지 표현", "첫 3초 훅 유형", "광고 �
 
 def research_node(state: PlanState) -> dict:
     ch, sp = state["channel"], state["sponsorship"]
-    llm = ChatBedrockConverse(
-        model=config.GEN_MODEL, region_name=config.AWS_REGION, temperature=0, max_tokens=500
-    ).bind_tools([search_knowledge])
-    msg = llm.invoke(
-        PROMPT.format(
+    prompt = PROMPT.format(
             channel_name=ch.channel_name,
             concept=ch.concept,
             speech=ch.speech_style,
@@ -43,6 +37,8 @@ def research_node(state: PlanState) -> dict:
             length_sec=sp.length_sec,
             video_points=state.get("video_points", sp.promo_points),
         )
+    msg = invoke_with_fallback(
+        gen_models(), lambda m: chat(m, 0, 500).bind_tools([search_knowledge]), prompt, role="gen"
     )
     queries = [c["args"].get("query", "") for c in msg.tool_calls if c["name"] == "search_knowledge"]
     queries = [q for q in queries if q] or [q.format(category=sp.category) for q in DEFAULT_QUERIES]

@@ -32,6 +32,12 @@ GEN_MODEL_FALLBACKS = [
 # 채점 모델: 한 단계 위, temperature 0. Agent(app/)는 이 값을 쓰지 않는다.
 GRADER_MODEL = os.getenv("GRADER_MODEL", "us.anthropic.claude-sonnet-4-6")
 GRADER_TEMPERATURE = 0
+# 채점 모델이 한도에 걸리면 차례로 쓸 예비 채점 모델 (어떤 모델로 채점했는지 결과에 기록된다).
+GRADER_MODEL_FALLBACKS = [
+    m.strip()
+    for m in os.getenv("GRADER_MODEL_FALLBACKS", "us.anthropic.claude-sonnet-4-5-20250929-v1:0").split(",")
+    if m.strip()
+]
 # 임베딩: 계정에 Bedrock 임베딩 모델이 없어 Chroma 기본 로컬 임베딩을 쓴다 (키 불필요).
 
 # --- 경로 -------------------------------------------------------------------
