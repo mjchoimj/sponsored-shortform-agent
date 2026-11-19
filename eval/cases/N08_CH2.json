@@ -1,0 +1,34 @@
+{
+  "case_id": "N08",
+  "case_type": "normal",
+  "channel_id": "CH2",
+  "pair_group": null,
+  "sponsorship": {
+    "product_name": "소리담 오픈형 무선 이어폰",
+    "category": "전자·액세서리",
+    "promo_points": [
+      "노이즈 캔슬링으로 출근길 지하철 소음 차단",
+      "한 번 충전에 8시간 재생",
+      "10분 충전으로 2시간 사용",
+      "가벼운 4g 이어버드"
+    ],
+    "length_sec": 45,
+    "product_desc": "무선 이어폰(가상 브랜드 '소리담'). 액티브 노이즈 캔슬링, 이어버드 단독 8시간·케이스 포함 30시간 재생, 10분 고속 충전 시 2시간 재생, 이어버드 한쪽 4g. 정가 79,000원."
+  },
+  "hitl_responses": [
+    {
+      "stage": "precheck",
+      "answer": "proceed"
+    },
+    {
+      "stage": "concept",
+      "answer": 2
+    },
+    {
+      "stage": "final",
+      "answer": "approve"
+    }
+  ],
+  "expected_trap": null,
+  "memo": ""
+}

@@ -1,0 +1,35 @@
+{
+  "case_id": "N09",
+  "case_type": "normal",
+  "channel_id": "CH2",
+  "pair_group": null,
+  "sponsorship": {
+    "product_name": "결고운 커버 쿠션",
+    "category": "화장품",
+    "promo_points": [
+      "한 번 두드리면 잡티 커버",
+      "오후까지 무너짐 적음",
+      "리필 1개 포함",
+      "퍼프가 촘촘해 뭉침 없음",
+      "21호·23호 두 가지 색상"
+    ],
+    "length_sec": 60,
+    "product_desc": "쿠션 파운데이션(가상 브랜드 '결고운'). 본품 15g + 리필 15g, 21호·23호, 세미 매트 마무리, 촘촘한 에어 퍼프 포함. 정가 32,000원."
+  },
+  "hitl_responses": [
+    {
+      "stage": "precheck",
+      "answer": "proceed"
+    },
+    {
+      "stage": "concept",
+      "answer": 1
+    },
+    {
+      "stage": "final",
+      "answer": "approve"
+    }
+  ],
+  "expected_trap": null,
+  "memo": "60초·포인트 5개(상한 딱 맞음)"
+}

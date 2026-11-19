@@ -1,0 +1,33 @@
+{
+  "case_id": "N02",
+  "case_type": "normal",
+  "channel_id": "CH3",
+  "pair_group": "PAIR_A",
+  "sponsorship": {
+    "product_name": "보송하루 미니 제습기",
+    "category": "생활용품",
+    "promo_points": [
+      "하루 최대 1L 제습으로 원룸 빨래 건조에 충분",
+      "소음 30dB대 저소음 모드",
+      "물통 가득 차면 자동 정지"
+    ],
+    "length_sec": 30,
+    "product_desc": "원룸·작은 방용 소형 제습기(가상 브랜드 '보송하루'). 물통 1.2L, 저소음 모드 약 32dB, 물통 만수 시 자동 정지, 무게 2.1kg으로 한 손 이동 가능. 정가 89,000원."
+  },
+  "hitl_responses": [
+    {
+      "stage": "precheck",
+      "answer": "proceed"
+    },
+    {
+      "stage": "concept",
+      "answer": 2
+    },
+    {
+      "stage": "final",
+      "answer": "approve"
+    }
+  ],
+  "expected_trap": null,
+  "memo": "쌍 A — 같은 제습기를 맞벌이 주부 살림(존댓말) 톤으로"
+}

@@ -1,0 +1,40 @@
+{
+  "case_id": "F07",
+  "case_type": "concept_conflict",
+  "channel_id": "CH2",
+  "pair_group": null,
+  "sponsorship": {
+    "product_name": "별무리 12색 아이섀도 팔레트",
+    "category": "화장품",
+    "promo_points": [
+      "12색 전부 쓰는 15단계 화려한 파티 메이크업 루틴 보여 주기",
+      "펄이 날림 없이 밀착",
+      "거울 내장 슬림 케이스"
+    ],
+    "length_sec": 45,
+    "product_desc": "아이섀도 팔레트(가상 브랜드 '별무리'). 매트 6색 + 펄 6색, 거울 내장 슬림 케이스, 데일리 브라운 계열 포함. 정가 26,000원."
+  },
+  "hitl_responses": [
+    {
+      "stage": "precheck",
+      "answer": "accept_suggestion"
+    },
+    {
+      "stage": "concept",
+      "answer": 2
+    },
+    {
+      "stage": "final",
+      "answer": "approve"
+    }
+  ],
+  "expected_trap": {
+    "type": "concept_conflict",
+    "trap_detail": "'아침 5분 깔끔 출근 준비' 채널에 '15단계 화려한 파티 메이크업' 요구",
+    "trap_points": [
+      0
+    ],
+    "expected_handling": "채널 톤(5분·출근용 무난)을 유지하고, 팔레트 중 데일리 색 2~3개로 5분 출근 메이크업을 보여 준다. 화려한 루틴은 설명란에 '주말용 활용'으로 짧게 넘긴다."
+  },
+  "memo": ""
+}

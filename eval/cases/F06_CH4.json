@@ -1,0 +1,40 @@
+{
+  "case_id": "F06",
+  "case_type": "concept_conflict",
+  "channel_id": "CH4",
+  "pair_group": null,
+  "sponsorship": {
+    "product_name": "새벽빛 비타민 앰플",
+    "category": "화장품",
+    "promo_points": [
+      "칭찬만 해 주세요. 단점은 절대 언급하지 마세요",
+      "비타민 C 유도체 함유",
+      "가벼운 워터 제형"
+    ],
+    "length_sec": 30,
+    "product_desc": "비타민 앰플(가상 브랜드 '새벽빛'). 30mL, 비타민 C 유도체, 워터 제형, 개봉 후 3개월 내 사용 권장(산화로 색이 변할 수 있음). 정가 28,000원."
+  },
+  "hitl_responses": [
+    {
+      "stage": "precheck",
+      "answer": "accept_suggestion"
+    },
+    {
+      "stage": "concept",
+      "answer": 1
+    },
+    {
+      "stage": "final",
+      "answer": "approve"
+    }
+  ],
+  "expected_trap": {
+    "type": "concept_conflict",
+    "trap_detail": "솔직 장단점이 정체성인 채널에 '칭찬만, 단점 금지' 요구",
+    "trap_points": [
+      0
+    ],
+    "expected_handling": "잔소리 큰언니 톤은 유지하되, 단점을 직접 말하는 대신 '개봉 후 빨리 쓰라' 같은 사용 팁으로 바꿔 넣는다. '단점 하나도 없어' 류의 avoid 표현은 쓰지 않는다."
+  },
+  "memo": ""
+}

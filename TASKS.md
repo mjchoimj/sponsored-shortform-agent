@@ -23,7 +23,7 @@
   - 항목: concept, speech_style, tone_keywords, signature_opening, signature_ending, representative_format, avoid
   - 완료 확인: 4개 파일 모두 `json.load` 성공
 
-- [ ] **T02 · 평가셋 20세트** (P0)
+- [x] **T02 · 평가셋 20세트** (P0)
   - 만들 것: `eval/cases/*.json` — 일반 13(같은 제품 × 다른 채널 쌍 2쌍 이상) · 분량 초과 3(개수·길이·비율) · 모순 2 · 채널 콘셉트 충돌 2
   - 각 케이스: 채널 ID, 협찬 정보, HITL 자동 응답 3개, (함정이면) 기대 함정 유형
   - 완료 확인: 20개 파일, 유형별 개수가 위와 일치

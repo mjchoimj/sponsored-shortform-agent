@@ -1,0 +1,33 @@
+{
+  "case_id": "N04",
+  "case_type": "normal",
+  "channel_id": "CH4",
+  "pair_group": "PAIR_B",
+  "sponsorship": {
+    "product_name": "맑은결 데일리 선크림 SPF50+",
+    "category": "화장품",
+    "promo_points": [
+      "백탁 없이 투명하게 발림",
+      "메이크업 전 베이스로 써도 밀리지 않음",
+      "SPF50+ PA++++ 자외선 차단"
+    ],
+    "length_sec": 30,
+    "product_desc": "가벼운 로션 제형 선크림(가상 브랜드 '맑은결'). SPF50+ PA++++, 50mL, 백탁이 적은 투명 제형, 바른 뒤 1~2분이면 산뜻하게 마무리되어 메이크업 전 사용 가능. 정가 22,000원."
+  },
+  "hitl_responses": [
+    {
+      "stage": "precheck",
+      "answer": "proceed"
+    },
+    {
+      "stage": "concept",
+      "answer": 3
+    },
+    {
+      "stage": "final",
+      "answer": "approve"
+    }
+  ],
+  "expected_trap": null,
+  "memo": "쌍 B — 같은 선크림을 잔소리 큰언니(반말) 톤으로, 단점도 솔직히"
+}

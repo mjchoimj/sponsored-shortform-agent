@@ -1,0 +1,32 @@
+{
+  "case_id": "N06",
+  "case_type": "normal",
+  "channel_id": "CH3",
+  "pair_group": "PAIR_C",
+  "sponsorship": {
+    "product_name": "한끼뚝딱 냉동 김치볶음밥",
+    "category": "일반식품",
+    "promo_points": [
+      "전자레인지 3분이면 완성",
+      "1봉 2인분 구성"
+    ],
+    "length_sec": 15,
+    "product_desc": "냉동 김치볶음밥(가상 브랜드 '한끼뚝딱'). 1봉 500g(2인분), 전자레인지 3분 또는 프라이팬 5분 조리, 국산 김치 사용. 3봉 묶음 12,900원."
+  },
+  "hitl_responses": [
+    {
+      "stage": "precheck",
+      "answer": "proceed"
+    },
+    {
+      "stage": "concept",
+      "answer": 1
+    },
+    {
+      "stage": "final",
+      "answer": "approve"
+    }
+  ],
+  "expected_trap": null,
+  "memo": "쌍 C — 같은 볶음밥을 퇴근 후 저녁 관점으로"
+}

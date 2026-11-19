@@ -1,0 +1,41 @@
+{
+  "case_id": "F04",
+  "case_type": "contradiction",
+  "channel_id": "CH1",
+  "pair_group": null,
+  "sponsorship": {
+    "product_name": "끓는점 무선 전기포트 1.7L",
+    "category": "생활용품",
+    "promo_points": [
+      "업계에서 가장 저렴한 전기포트",
+      "프리미엄 최고급 스테인리스 마감",
+      "3분 만에 물 끓임"
+    ],
+    "length_sec": 30,
+    "product_desc": "무선 전기포트(가상 브랜드 '끓는점'). 1.7L, 스테인리스 내부, 1,800W, 자동 전원 차단. 정가 24,900원."
+  },
+  "hitl_responses": [
+    {
+      "stage": "precheck",
+      "answer": "accept_suggestion"
+    },
+    {
+      "stage": "concept",
+      "answer": 2
+    },
+    {
+      "stage": "final",
+      "answer": "approve"
+    }
+  ],
+  "expected_trap": {
+    "type": "contradiction",
+    "trap_detail": "'가장 저렴' 과 '프리미엄 최고급'이 서로 부딪힘",
+    "trap_points": [
+      0,
+      1
+    ],
+    "expected_handling": "둘 중 한쪽만 살린다. 자취 채널 콘셉트상 가격 쪽(가성비)을 살리고, '가장'·'최고급' 같은 최상급 표현은 쓰지 않는다."
+  },
+  "memo": ""
+}

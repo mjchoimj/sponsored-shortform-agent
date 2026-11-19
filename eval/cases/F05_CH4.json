@@ -1,0 +1,41 @@
+{
+  "case_id": "F05",
+  "case_type": "contradiction",
+  "channel_id": "CH4",
+  "pair_group": null,
+  "sponsorship": {
+    "product_name": "고정핏 세팅 미스트",
+    "category": "화장품",
+    "promo_points": [
+      "보송한 무광 매트 피니시",
+      "촉촉한 물광 광채 피니시",
+      "메이크업 고정 8시간"
+    ],
+    "length_sec": 30,
+    "product_desc": "메이크업 세팅 미스트(가상 브랜드 '고정핏'). 100mL, 미세 분사, 뿌린 직후엔 촉촉하고 마르면 자연스러운 세미 매트 마무리. 정가 16,000원."
+  },
+  "hitl_responses": [
+    {
+      "stage": "precheck",
+      "answer": "accept_suggestion"
+    },
+    {
+      "stage": "concept",
+      "answer": 1
+    },
+    {
+      "stage": "final",
+      "answer": "approve"
+    }
+  ],
+  "expected_trap": {
+    "type": "contradiction",
+    "trap_detail": "'무광 매트' 와 '물광 광채' 피니시가 서로 부딪힘",
+    "trap_points": [
+      0,
+      1
+    ],
+    "expected_handling": "한쪽만 쓴다. 제품 설명(마르면 세미 매트)에 맞는 쪽을 살리고, 다른 쪽은 쓰지 않는다."
+  },
+  "memo": ""
+}

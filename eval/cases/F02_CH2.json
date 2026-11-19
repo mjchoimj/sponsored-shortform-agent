@@ -1,0 +1,40 @@
+{
+  "case_id": "F02",
+  "case_type": "overflow_length",
+  "channel_id": "CH2",
+  "pair_group": null,
+  "sponsorship": {
+    "product_name": "시계톡 스마트워치 라이트",
+    "category": "전자·액세서리",
+    "promo_points": [
+      "앱 연동 설정 7단계(블루투스 켜기→앱 설치→회원가입→기기 검색→페어링→알림 권한→워치페이스 선택) 전부 보여 주기",
+      "출근길 지하철에서 알림 확인",
+      "배터리 7일"
+    ],
+    "length_sec": 30,
+    "product_desc": "스마트워치(가상 브랜드 '시계톡'). 1.4인치 화면, 배터리 최대 7일, 카톡·전화 알림 진동, 전용 앱 연동 필요. 정가 59,000원."
+  },
+  "hitl_responses": [
+    {
+      "stage": "precheck",
+      "answer": "accept_suggestion"
+    },
+    {
+      "stage": "concept",
+      "answer": 2
+    },
+    {
+      "stage": "final",
+      "answer": "approve"
+    }
+  ],
+  "expected_trap": {
+    "type": "overflow_length",
+    "trap_detail": "30초 안에 앱 설정 7단계를 모두 보여 달라는 요구",
+    "trap_points": [
+      0
+    ],
+    "expected_handling": "영상에는 핵심 1~2단계(예: 앱 설치·페어링)만 보여 주고, 7단계 전체는 설명란에 순서대로 적는다."
+  },
+  "memo": ""
+}

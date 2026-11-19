@@ -1,0 +1,33 @@
+{
+  "case_id": "N13",
+  "case_type": "normal",
+  "channel_id": "CH3",
+  "pair_group": null,
+  "sponsorship": {
+    "product_name": "든든한끼 닭가슴살 큐브 10팩",
+    "category": "일반식품",
+    "promo_points": [
+      "봉지째 데우기만 하면 반찬 완성",
+      "한 팩 100g 개별 포장",
+      "10팩 묶음 19,800원"
+    ],
+    "length_sec": 30,
+    "product_desc": "양념 닭가슴살 큐브(가상 브랜드 '든든한끼'). 100g 개별 포장 10팩, 냉동 보관, 전자레인지 1분 30초 데우기, 갈릭·고추장 두 가지 맛. 10팩 19,800원."
+  },
+  "hitl_responses": [
+    {
+      "stage": "precheck",
+      "answer": "proceed"
+    },
+    {
+      "stage": "concept",
+      "answer": 3
+    },
+    {
+      "stage": "final",
+      "answer": "approve"
+    }
+  ],
+  "expected_trap": null,
+  "memo": ""
+}

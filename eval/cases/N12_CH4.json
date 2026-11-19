@@ -1,0 +1,32 @@
+{
+  "case_id": "N12",
+  "case_type": "normal",
+  "channel_id": "CH4",
+  "pair_group": null,
+  "sponsorship": {
+    "product_name": "물들임 워터 립 틴트",
+    "category": "화장품",
+    "promo_points": [
+      "물처럼 가볍게 발리고 착색이 오래감",
+      "MLBB 데일리 컬러 4종"
+    ],
+    "length_sec": 15,
+    "product_desc": "워터 제형 립 틴트(가상 브랜드 '물들임'). 4g, 데일리 컬러 4종, 착색력이 강해 처음엔 얼룩지기 쉬우니 얇게 여러 번 바르는 것을 권장. 정가 13,000원."
+  },
+  "hitl_responses": [
+    {
+      "stage": "precheck",
+      "answer": "proceed"
+    },
+    {
+      "stage": "concept",
+      "answer": 2
+    },
+    {
+      "stage": "final",
+      "answer": "approve"
+    }
+  ],
+  "expected_trap": null,
+  "memo": ""
+}

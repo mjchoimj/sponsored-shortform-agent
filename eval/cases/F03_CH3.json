@@ -1,0 +1,40 @@
+{
+  "case_id": "F03",
+  "case_type": "overflow_ratio",
+  "channel_id": "CH3",
+  "pair_group": null,
+  "sponsorship": {
+    "product_name": "지글 전기 그릴 팬",
+    "category": "생활용품",
+    "promo_points": [
+      "제품 장면을 영상의 70% 이상으로 해 주세요",
+      "기름이 빠지는 홈 구조",
+      "코팅 플레이트 분리 세척"
+    ],
+    "length_sec": 30,
+    "product_desc": "전기 그릴 팬(가상 브랜드 '지글'). 지름 32cm, 기름 배출 홈, 분리형 코팅 플레이트 식기세척기 사용 가능, 온도 5단계. 정가 69,000원."
+  },
+  "hitl_responses": [
+    {
+      "stage": "precheck",
+      "answer": "accept_suggestion"
+    },
+    {
+      "stage": "concept",
+      "answer": 3
+    },
+    {
+      "stage": "final",
+      "answer": "approve"
+    }
+  ],
+  "expected_trap": {
+    "type": "overflow_ratio",
+    "trap_detail": "제품 노출 70% 이상 요구 (규칙 상한 30%)",
+    "trap_points": [
+      0
+    ],
+    "expected_handling": "노출 30% 규칙을 우선한다. 제품 노출 씬 길이 합 ÷ 전체 ≤ 30%로 계획하고, 이 요구는 영상 포인트로 반영하지 않는다."
+  },
+  "memo": ""
+}

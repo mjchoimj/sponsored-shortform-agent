@@ -1,0 +1,35 @@
+{
+  "case_id": "N10",
+  "case_type": "normal",
+  "channel_id": "CH3",
+  "pair_group": null,
+  "sponsorship": {
+    "product_name": "싹쓸이 무선 핸디 청소기",
+    "category": "생활용품",
+    "promo_points": [
+      "1.1kg 가벼운 무게로 한 손 청소",
+      "벽걸이 거치대로 바로 꺼내 쓰기",
+      "물세척 가능한 필터",
+      "한 번 충전 25분 사용",
+      "식탁 밑 부스러기용 틈새 노즐 포함"
+    ],
+    "length_sec": 60,
+    "product_desc": "무선 핸디 청소기(가상 브랜드 '싹쓸이'). 무게 1.1kg, 일반 모드 25분 사용, 물세척 필터, 벽걸이 거치대·틈새 노즐·브러시 노즐 포함. 정가 119,000원."
+  },
+  "hitl_responses": [
+    {
+      "stage": "precheck",
+      "answer": "proceed"
+    },
+    {
+      "stage": "concept",
+      "answer": 2
+    },
+    {
+      "stage": "final",
+      "answer": "approve"
+    }
+  ],
+  "expected_trap": null,
+  "memo": ""
+}

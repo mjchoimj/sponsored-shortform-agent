@@ -1,0 +1,41 @@
+{
+  "case_id": "F01",
+  "case_type": "overflow_count",
+  "channel_id": "CH1",
+  "pair_group": null,
+  "sponsorship": {
+    "product_name": "뽀득 다용도 세정 스프레이",
+    "category": "생활용품",
+    "promo_points": [
+      "주방 기름때 제거",
+      "욕실 물때 제거",
+      "가스레인지 찌든 때",
+      "냄새 제거",
+      "식물 유래 성분",
+      "리필 파우치 제공",
+      "500mL 대용량"
+    ],
+    "length_sec": 15,
+    "product_desc": "다용도 세정 스프레이(가상 브랜드 '뽀득'). 500mL, 식물 유래 계면활성제, 주방·욕실 겸용, 1L 리필 파우치 별매. 정가 9,900원."
+  },
+  "hitl_responses": [
+    {
+      "stage": "precheck",
+      "answer": "accept_suggestion"
+    },
+    {
+      "stage": "concept",
+      "answer": 1
+    },
+    {
+      "stage": "final",
+      "answer": "approve"
+    }
+  ],
+  "expected_trap": {
+    "type": "overflow_count",
+    "trap_detail": "15초 영상에 포인트 7개 (상한 2개)",
+    "expected_handling": "영상에는 상위 2개 포인트만 넣고, 나머지 5개는 설명란으로 보낸다. 모든 포인트가 영상 또는 설명란에 있어야 한다."
+  },
+  "memo": ""
+}
