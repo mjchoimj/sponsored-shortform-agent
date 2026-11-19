@@ -35,8 +35,17 @@
 
 - API 키는 .env에서 읽는다.
 
-## 폴더 구조 (예정)
+## 폴더 구조
 `app/`(Agent) · `mcp_server/`(규정 검사기) · `knowledge/`(RAG 문서, `rules.json`) · `examples/`(데모 입력) · `eval/`(평가셋, 기준선, 채점) · `outputs/`(실행 결과). 상세는 service.md 11장.
 
 ## 명령어
-구현 후 채운다. (실행, 평가 실행, MCP 서버 단독 실행)
+| 하는 일 | 명령어 |
+|---|---|
+| 설치 | `pip install -r requirements.txt` 후 `.env.example` 을 `.env` 로 복사해 키 입력 |
+| 기획 실행 (대화형) | `python -m app.main examples/normal.json` |
+| 기획 실행 (자동 응답) | `python -m app.main examples/normal.json --auto` |
+| 평가 전체 | `python -m eval.run_eval` (새로: `--fresh`, 일부: `--cases N01,F04`) |
+| 같은 제품 × 다른 채널 비교표 | `python -m eval.compare` |
+| RAG 색인 다시 만들기 | `python -m app.rag` |
+| MCP 서버 단독 확인 | `python -m mcp_server.server --selftest` (대기 모드: `python -m mcp_server.server`) |
+| 테스트 (AI 호출 없음) | `python -m unittest discover tests -v` |

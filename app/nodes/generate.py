@@ -144,6 +144,12 @@ def generate_node(state: PlanState) -> dict:
     out = generate(
         state["channel"], sp, state["concept"], state["plan"],
         state.get("video_points", sp.promo_points),
-        state.get("check_feedback", ""),
+        _feedback(state),
     )
     return {"output": out}
+
+
+def _feedback(state: PlanState) -> str:
+    """자동 검증 실패 이유 + 사람의 수정 요청."""
+    from app.nodes.check import human_feedback_text
+    return "\n".join(x for x in (state.get("check_feedback", ""), human_feedback_text(state)) if x)

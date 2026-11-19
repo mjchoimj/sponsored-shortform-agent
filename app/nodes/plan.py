@@ -146,6 +146,12 @@ def plan_node(state: PlanState) -> dict:
         state.get("video_points", sp.promo_points),
         state.get("description_points", []),
         state.get("knowledge", ""),
-        state.get("check_feedback", ""),
+        _feedback(state),
     )
     return {"plan": plan}
+
+
+def _feedback(state: PlanState) -> str:
+    """자동 검증 실패 이유 + 사람의 수정 요청."""
+    from app.nodes.check import human_feedback_text
+    return "\n".join(x for x in (state.get("check_feedback", ""), human_feedback_text(state)) if x)

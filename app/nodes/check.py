@@ -65,19 +65,66 @@ def revise_node(state: PlanState) -> dict:
 APPROVE = {"approve", "1", "y", "yes", "네", "예", "승인", "ㅇㅇ"}
 
 
+REVISE = {"revise", "2", "수정", "수정 요청"}
+
+
+def parse_final_answer(answer) -> tuple[str, str]:
+    """최종 확인 답 → (action, 수정 요청 내용). action: approve | revise | reject.
+
+    수정 요청은 {"action": "revise", "feedback": "..."} 또는 "수정: ..." 문자열로 받는다.
+    """
+    if isinstance(answer, dict):
+        action = str(answer.get("action", "")).lower()
+        fb = str(answer.get("feedback", "")).strip()
+        if action in REVISE and fb:
+            return "revise", fb
+        return ("approve" if action in APPROVE else "reject"), ""
+    text = str(answer).strip()
+    for prefix in ("수정:", "수정 :", "revise:"):
+        if text.lower().startswith(prefix) and text[len(prefix):].strip():
+            return "revise", text[len(prefix):].strip()
+    return ("approve" if text.lower() in APPROVE else "reject"), ""
+
+
 def final_hitl_node(state: PlanState) -> dict:
-    """HITL ③ — 검증 결과를 보여 주고 최종 승인을 받는다."""
+    """HITL ③ — 스토리보드·업로드 패키지와 검증 결과를 보여 주고 사람의 최종 확인을 받는다.
+
+    승인 → 저장 / 수정 요청 → 요청을 반영해 계획부터 다시 (자동 검증 후 다시 확인) / 반려 → 미승인으로 저장.
+    """
     report: CheckReport = state["check_report"]
     unresolved = not report.passed
+    history = list(state.get("human_feedback", []))
+    can_revise = len(history) < config.MAX_HUMAN_REVISIONS
     answer = interrupt(
         {
             "stage": "final",
-            "question": "검증 결과를 확인하고 최종 승인해 주세요.",
+            "question": "스토리보드와 업로드 패키지를 검토하고 승인해 주세요.",
+            "output": state["output"].model_dump(mode="json"),
             "passed": report.passed,
             "unresolved": unresolved,
             "revision": state.get("revision", 0),
             "items": [i.model_dump() for i in report.items],
+            "human_feedback": history,
+            "can_revise": can_revise,
         }
     )
-    approved = str(answer).strip().lower() in APPROVE
-    return {"unresolved": unresolved, "approved": approved}
+    action, fb = parse_final_answer(answer)
+    if action == "revise" and can_revise:
+        # 수정 요청: 자동 수정 횟수를 0으로 되돌리고 계획부터 다시 만든다.
+        return {"final_action": "revise", "human_feedback": history + [fb], "revision": 0, "approved": False}
+    if action == "revise":  # 수정 요청 한도를 넘음 → 미승인으로 저장
+        action = "reject"
+    return {"unresolved": unresolved, "approved": action == "approve", "final_action": action}
+
+
+def route_after_final(state: PlanState) -> str:
+    return "plan" if state.get("final_action") == "revise" else "save"
+
+
+def human_feedback_text(state: PlanState) -> str:
+    """plan·generate 프롬프트에 붙일 사람의 수정 요청 (자동 검증 피드백과 함께)."""
+    fbs = state.get("human_feedback", [])
+    if not fbs:
+        return ""
+    lines = "\n".join(f"- {f}" for f in fbs)
+    return f"[사용자 수정 요청 — 최우선으로 반드시 반영. 단, 광고 규정·채널 금지 표현은 지킨다]\n{lines}"

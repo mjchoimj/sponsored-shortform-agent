@@ -39,6 +39,8 @@ def _md(state: PlanState, report: CheckReport) -> str:
     ]
     if state.get("description_points"):
         L.append("설명란 포인트: " + " / ".join(state["description_points"]))
+    if state.get("human_feedback"):
+        L += ["", "반영한 수정 요청 (사람 검토):"] + [f"- {f}" for f in state["human_feedback"]]
     L += ["", "## 스토리보드", "", "| # | 초 | 제품 | 화면 | 대사 | 자막 |", "|---|---|---|---|---|---|"]
     cell = lambda t: t.replace("|", "\\|").replace("\n", " ")
     for s in sb.scenes:
@@ -85,6 +87,8 @@ def save_outputs(state: PlanState, base: Path | None = None) -> Path:
         "unresolved": state.get("unresolved", False),
         "approved": state.get("approved", False),
         "revision": state.get("revision", 0),
+        "final_action": state.get("final_action", ""),
+        "human_feedback": state.get("human_feedback", []),
         "items": [i.model_dump() for i in report.items],
         "history": [[i.model_dump() for i in r.items] for r in state.get("check_history", [])],
         "precheck": json.loads(state["precheck"].model_dump_json()) if state.get("precheck") else None,

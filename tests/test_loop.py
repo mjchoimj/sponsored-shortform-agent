@@ -57,7 +57,8 @@ def run_graph(answers):
     while "__interrupt__" in out:
         payload = out["__interrupt__"][0].value
         stages.append(payload)
-        out = g.invoke(Command(resume=answers[payload["stage"]]), cfg)
+        a = answers[payload["stage"]]
+        out = g.invoke(Command(resume=a.pop(0) if isinstance(a, list) else a), cfg)
     return out, stages
 
 
@@ -105,8 +106,37 @@ class TestLoop(unittest.TestCase):
         self.assertTrue(stages[-1]["passed"])
 
     def test_reject_at_final(self):
-        out, _ = run_graph({"concept": 1, "final": "2"})
+        out, _ = run_graph({"concept": 1, "final": "3"})
         self.assertFalse(out["approved"])
+        self.assertEqual(out["final_action"], "reject")
+
+    def test_human_revise_then_approve(self):
+        """최종 확인에서 수정 요청 → 계획부터 다시 → 다시 확인 → 승인."""
+        req = {"action": "revise", "feedback": "제목에 가격을 넣어 주세요"}
+        out, stages = run_graph({"concept": 1, "final": [req, "approve"]})
+        finals = [s for s in stages if s["stage"] == "final"]
+        self.assertEqual(len(finals), 2)  # 두 번 확인받음
+        self.assertIn("output", finals[0])  # 확인 화면에 스토리보드·업로드 패키지가 실림
+        self.assertEqual(finals[1]["human_feedback"], ["제목에 가격을 넣어 주세요"])
+        self.assertEqual(CALLS["plan"], 2)  # 수정 요청으로 계획부터 한 번 더
+        self.assertTrue(out["approved"])
+        from app.nodes.check import human_feedback_text
+        self.assertIn("제목에 가격", human_feedback_text(out))  # 계획·생성 프롬프트로 전달됨
+
+    def test_human_revise_limit(self):
+        req = lambda: {"action": "revise", "feedback": "다시"}
+        n = config.MAX_HUMAN_REVISIONS
+        out, stages = run_graph({"concept": 1, "final": [req() for _ in range(n + 1)]})
+        self.assertEqual(len(out["human_feedback"]), n)
+        self.assertFalse(stages[-1]["can_revise"])
+        self.assertFalse(out["approved"])  # 한도를 넘긴 수정 요청은 미승인 저장
+
+    def test_parse_final_answer(self):
+        from app.nodes.check import parse_final_answer
+        self.assertEqual(parse_final_answer("1"), ("approve", ""))
+        self.assertEqual(parse_final_answer("수정: 더 짧게"), ("revise", "더 짧게"))
+        self.assertEqual(parse_final_answer({"action": "revise", "feedback": ""}), ("reject", ""))
+        self.assertEqual(parse_final_answer("3"), ("reject", ""))
 
 
 if __name__ == "__main__":

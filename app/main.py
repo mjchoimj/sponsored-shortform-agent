@@ -27,7 +27,7 @@ STEP_NAMES = {
     "generate": "스토리보드·업로드 패키지 작성",
     "check": "자동 검증",
     "revise": "수정 (계획부터 다시)",
-    "final_hitl": "최종 승인",
+    "final_hitl": "최종 검토",
     "save": "파일 저장",
 }
 
@@ -54,23 +54,38 @@ def ask(payload: dict, auto: bool):
             print(f"     첫 대사: {c['hook_line']}")
             print(f"     {c['summary']}")
     elif stage == "final":
-        status = "모두 통과" if payload["passed"] else f"미통과 (수정 {payload['revision']}회 후)"
-        print(f"  검증 결과: {status}")
+        show(PlanOutput.model_validate(payload["output"]), heading="📝 검토할 기획 (스토리보드 · 업로드 패키지)")
+        status = "모두 통과" if payload["passed"] else f"미통과 (자동 수정 {payload['revision']}회 후)"
+        print(f"\n[자동 검증 결과] {status}")
         for it in payload["items"]:
             print(f"   {'✅' if it['passed'] else '❌'} {it['code']} {it['name']}: {it['detail']}")
-        print("\n  1) 승인   2) 반려")
+        if payload.get("human_feedback"):
+            print("\n[지금까지 반영한 수정 요청]", *[f"\n   - {f}" for f in payload["human_feedback"]])
+        print("\n" + "=" * 60)
+        print("🙋 " + payload["question"])
+        if payload.get("can_revise", True):
+            print("  1) 승인 (저장)   2) 수정 요청   3) 반려 (미승인으로 저장)")
+        else:
+            print("  1) 승인 (저장)   3) 반려 (미승인으로 저장)   ※ 수정 요청 한도에 도달했습니다")
     if auto:
         a = AUTO_ANSWERS.get(stage, "1")
         print(f"  (자동 답: {a})")
         return a
-    return input("\n번호를 입력하세요 > ").strip() or "1"
+    choice = input("\n번호를 입력하세요 > ").strip() or "1"
+    if stage == "final" and choice in ("2", "수정") and payload.get("can_revise", True):
+        fb = ""
+        while not fb:
+            fb = input("고칠 내용을 적어 주세요 (예: 3번 씬 대사를 더 짧게, 제목에 가격 넣기)\n> ").strip()
+        print("  ↻ 수정 요청을 반영해 계획부터 다시 만듭니다…")
+        return {"action": "revise", "feedback": fb}
+    return choice
 
 
 # --- 결과 화면 -------------------------------------------------------------------
-def show(out: PlanOutput) -> None:
+def show(out: PlanOutput, heading: str = "✅ 기획 완료") -> None:
     sb, pkg = out.storyboard, out.upload_package
     print("\n" + "=" * 60)
-    print(f"✅ 기획 완료 — {out.concept.concept_no}안 · {out.concept.title}")
+    print(f"{heading} — {out.concept.concept_no}안 · {out.concept.title}")
     print(f"   총 {sb.total_seconds}초 · 씬 {len(sb.scenes)}개")
     for s in sb.scenes:
         mark = "📦" if s.product_visible else "  "
@@ -108,7 +123,6 @@ def run(path: str, auto: bool = False) -> dict:
     if state.get("stopped"):
         print("\n⛔ 중단:", state.get("stop_reason", ""))
     elif state.get("output"):
-        show(state["output"])
         rep = state.get("check_report")
         if rep is not None:
             mark = "✅ 검증 통과" if rep.passed else "⚠️ 미통과 표시"

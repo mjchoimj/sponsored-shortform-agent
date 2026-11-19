@@ -7,7 +7,7 @@ from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
 from langgraph.graph import END, START, StateGraph
 
 from app import schemas
-from app.nodes.check import check_node, final_hitl_node, revise_node, route_after_check
+from app.nodes.check import check_node, final_hitl_node, revise_node, route_after_check, route_after_final
 from app.nodes.concept import concept_hitl_node, concept_node
 from app.nodes.generate import generate_node
 from app.nodes.plan import plan_node
@@ -52,7 +52,7 @@ def build_graph(checkpointer=None):
     g.add_edge("generate", "check")
     g.add_conditional_edges("check", route_after_check, {"revise": "revise", "final": "final_hitl"})
     g.add_edge("revise", "plan")
-    g.add_edge("final_hitl", "save")
+    g.add_conditional_edges("final_hitl", route_after_final, {"plan": "plan", "save": "save"})
     g.add_edge("save", END)
 
     if checkpointer is None:
