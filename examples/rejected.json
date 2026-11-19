@@ -1,0 +1,11 @@
+{
+  "demo": "거절 — 건강기능식품은 입력 단계에서 중단",
+  "channel_id": "CH3",
+  "sponsorship": {
+    "product_name": "활력 멀티비타민",
+    "category": "건강기능식품",
+    "promo_points": ["하루 한 알로 피로 회복", "면역력 강화"],
+    "length_sec": 30,
+    "product_desc": "멀티비타민 정제(가상 브랜드 '활력'). 60정, 하루 1정. 정가 19,000원."
+  }
+}

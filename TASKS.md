@@ -32,7 +32,7 @@
   - 만들 것: `knowledge/rules.json` — 금지 표현, 허용 광고 표시(`[광고]`·`#광고`), 단독 사용 시 실패 표시(`sponsored`·`ad`·`#내돈내산`), 길이별 포인트 상한(15/30/45/60초 → 2/3/4/5), 제품 노출 상한 30%, 훅 ≤ 3초, 거절 카테고리
   - 완료 확인: `python -c "import json;json.load(open('knowledge/rules.json',encoding='utf-8'))"`
 
-- [ ] **T04 · RAG 문서 + 데모 입력** (P0)
+- [x] **T04 · RAG 문서 + 데모 입력** (P0)
   - 만들 것: `knowledge/docs/`(공정위 추천·보증 심사지침 요약, 숏폼 노하우), `examples/` 데모 입력 3종(`normal.json` 포함)
   - 완료 확인: 파일 존재, 예시 3종 `json.load` 성공
 
