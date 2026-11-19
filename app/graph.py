@@ -1,7 +1,4 @@
-"""상태 그래프 — 사전 점검 → RAG → 콘셉트 → 계획 → 생성.
-
-검증·수정 루프(T11·T12)와 최종 승인(HITL ③)은 다음 작업에서 붙인다.
-"""
+"""상태 그래프 — 사전 점검 → RAG → 콘셉트 → 계획 → 생성 → 검증 ⇄ (수정 루프) → 최종 승인."""
 
 from __future__ import annotations
 
@@ -10,6 +7,7 @@ from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
 from langgraph.graph import END, START, StateGraph
 
 from app import schemas
+from app.nodes.check import check_node, final_hitl_node, revise_node, route_after_check
 from app.nodes.concept import concept_hitl_node, concept_node
 from app.nodes.generate import generate_node
 from app.nodes.plan import plan_node
@@ -22,7 +20,7 @@ _ALLOWED = [
     ("app.schemas", name)
     for name, obj in vars(schemas).items()
     if isinstance(obj, type) and issubclass(obj, schemas.BaseModel) and obj.__module__ == "app.schemas"
-]
+] + [("app.checks", "CheckReport"), ("app.checks", "CheckItem")]
 
 
 def _after_precheck(state: PlanState) -> str:
@@ -38,6 +36,9 @@ def build_graph(checkpointer=None):
     g.add_node("concept_hitl", concept_hitl_node)  # HITL ②
     g.add_node("plan", plan_node)
     g.add_node("generate", generate_node)
+    g.add_node("check", check_node)
+    g.add_node("revise", revise_node)  # 수정 루프: 계획부터 다시
+    g.add_node("final_hitl", final_hitl_node)  # HITL ③
 
     g.add_edge(START, "precheck")
     g.add_edge("precheck", "precheck_hitl")
@@ -46,7 +47,10 @@ def build_graph(checkpointer=None):
     g.add_edge("concept", "concept_hitl")
     g.add_edge("concept_hitl", "plan")
     g.add_edge("plan", "generate")
-    g.add_edge("generate", END)
+    g.add_edge("generate", "check")
+    g.add_conditional_edges("check", route_after_check, {"revise": "revise", "final": "final_hitl"})
+    g.add_edge("revise", "plan")
+    g.add_edge("final_hitl", END)
 
     if checkpointer is None:
         checkpointer = InMemorySaver(serde=JsonPlusSerializer(allowed_msgpack_modules=_ALLOWED))

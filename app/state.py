@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TypedDict
 
+from app.checks import CheckReport
 from app.schemas import (
     ChannelProfile,
     Concept,
@@ -34,3 +35,9 @@ class PlanState(TypedDict, total=False):
     plan: ScenePlan
     output: PlanOutput
     check_feedback: str  # 수정 루프에서 검증 실패 이유 (T12)
+    # 검증 · 수정 루프 · 최종 승인
+    check_report: CheckReport
+    check_history: list[CheckReport]  # 회차별 검증 결과
+    revision: int  # 수정 횟수 (0 = 첫 생성)
+    unresolved: bool  # 최대 수정 후에도 미통과
+    approved: bool  # 최종 승인 여부

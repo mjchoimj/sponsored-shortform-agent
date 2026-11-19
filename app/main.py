@@ -24,6 +24,9 @@ STEP_NAMES = {
     "concept_hitl": "콘셉트 선택",
     "plan": "씬 배분 계획",
     "generate": "스토리보드·업로드 패키지 작성",
+    "check": "자동 검증",
+    "revise": "수정 (계획부터 다시)",
+    "final_hitl": "최종 승인",
 }
 
 AUTO_ANSWERS = {"precheck": "accept_suggestion", "concept": 1, "final": "approve"}
@@ -48,6 +51,12 @@ def ask(payload: dict, auto: bool):
             print(f"\n  {c['concept_no']}안 · {c['title']}  [{c['hook_type']}]")
             print(f"     첫 대사: {c['hook_line']}")
             print(f"     {c['summary']}")
+    elif stage == "final":
+        status = "모두 통과" if payload["passed"] else f"미통과 (수정 {payload['revision']}회 후)"
+        print(f"  검증 결과: {status}")
+        for it in payload["items"]:
+            print(f"   {'✅' if it['passed'] else '❌'} {it['code']} {it['name']}: {it['detail']}")
+        print("\n  1) 승인   2) 반려")
     if auto:
         a = AUTO_ANSWERS.get(stage, "1")
         print(f"  (자동 답: {a})")
@@ -97,6 +106,10 @@ def run(path: str, auto: bool = False) -> dict:
         print("\n⛔ 중단:", state.get("stop_reason", ""))
     elif state.get("output"):
         show(state["output"])
+        rep = state.get("check_report")
+        if rep is not None:
+            mark = "✅ 검증 통과" if rep.passed else "⚠️ 미통과 표시"
+            print(f"\n{mark} · 수정 {state.get('revision', 0)}회 · 최종 승인: {'예' if state.get('approved') else '아니오'}")
     return state
 
 
