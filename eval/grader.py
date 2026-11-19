@@ -122,6 +122,27 @@ def _grade_llm(prompt: str) -> GradeLLM:
     )
 
 
+REQUOTE = """
+
+[다시 판정] 앞선 판정에서 {items} 의 quote 가 결과물 원고에 없었다 (판단 설명이나 요약을 인용하면 안 된다).
+quote 에는 결과물의 대사·자막·화면 설명·제목·설명란 중 한 문장을 한 글자도 바꾸지 말고 그대로 복사한다."""
+
+
+def _bad_quotes(llm: GradeLLM, text: str) -> list[str]:
+    """긍정 판정인데 인용이 원고에 없는 항목 이름."""
+    bad = []
+    if llm.concept.score >= 4 and not quote_ok(llm.concept.quote, text):
+        bad.append("concept")
+    s = llm.signature
+    if (s.opening_present and not quote_ok(s.opening_quote, text)) or (s.ending_present and not quote_ok(s.ending_quote, text)):
+        bad.append("signature")
+    if any(p.covered and not quote_ok(p.quote, text) for p in llm.points):
+        bad.append("points")
+    if llm.trap and llm.trap.handled and llm.trap.quote and not quote_ok(llm.trap.quote, text):
+        bad.append("trap")
+    return bad
+
+
 def b1_targets(case: EvalCase) -> list[int]:
     n = len(case.sponsorship.promo_points)
     t = case.expected_trap
@@ -152,6 +173,10 @@ def grade(case: EvalCase, ch: ChannelProfile, out: PlanOutput) -> dict:
         trap_part=TRAP_PART.format(type=trap.type, detail=trap.trap_detail, handling=trap.expected_handling) if trap else "",
     )
     llm: GradeLLM = _grade_llm(prompt)
+    # 인용이 원고에 없으면(채점 AI가 자기 설명을 인용하는 등) 한 번만 다시 묻는다. Agent·기준선에 똑같이 적용.
+    bad = _bad_quotes(llm, text)
+    if bad:
+        llm = _grade_llm(prompt + REQUOTE.format(items=", ".join(bad)))
     grader_model = next((c["model"] for c in reversed(get_usage_log()) if c["role"] == "grader"), config.GRADER_MODEL)
 
     for c in ("A1", "A3", "C1", "C2", "C4", "C5"):

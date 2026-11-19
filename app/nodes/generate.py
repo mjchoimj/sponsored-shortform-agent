@@ -9,6 +9,7 @@ from __future__ import annotations
 from pydantic import BaseModel, Field
 
 from app.llm import gen_structured
+from app.checks.items import product_terms
 from app.rules import forbidden_words, load_rules
 from app.schemas import (
     ChannelProfile,
@@ -41,6 +42,10 @@ PROMPT = """너는 인플루언서 채널의 협찬 숏폼 작가다. 아래 씬
   다 못 한 말은 자막이나 설명란으로 넘긴다.
 - 1번 씬(훅)은 콘셉트의 첫 대사로 시작하고 제품을 보여 주지 않는다.
 - visual 은 화면 설명(한국어). product_visible=false 인 씬의 visual·image_prompt 에는 제품이 나오지 않게.
+  제품 이름({product_terms})을 쓰지 말고, 제품을 손에 들기·착용하기·옆에 켜 두기 같은 장면도 안 된다. 사람·상황·결과만 보여 준다.
+- 채널 평소 영상처럼 만든다 (제품 소개 영상이 아니다):
+  · 채널 대표 포맷 "{format}" 의 단계가 하나도 빠짐없이 순서대로 씬에 드러나게.
+  · 톤 키워드 {tone} 가 각각 대사에 최소 한 번씩 분명히 드러나게.
 - image_prompt 와 style_sheet 는 영어. image_prompt 는 스타일 시트와 어울리게, 9:16 세로 구도, 씬마다 한 문단.
 - 쓰지 말 표현(채널 avoid): {avoid}
 - 쓰지 말 표현(광고 규정): {forbidden}
@@ -88,6 +93,7 @@ def generate(ch: ChannelProfile, sp: Sponsorship, concept: Concept, plan: SceneP
              video_points: list[str], feedback: str = "") -> PlanOutput:
     runner = gen_structured(GenOutput, temperature=0.7, max_tokens=8000, guard_category=sp.category)
     note = f"\n[이전 검증에서 실패한 점 — 반드시 고칠 것]\n{feedback}" if feedback else ""
+    scenes = None
     for _ in range(2):
         prompt = PROMPT.format(
             speech=ch.speech_style,
@@ -99,6 +105,8 @@ def generate(ch: ChannelProfile, sp: Sponsorship, concept: Concept, plan: SceneP
             channel_name=ch.channel_name,
             concept_text=ch.concept,
             tone=", ".join(ch.tone_keywords),
+            format=ch.representative_format,
+            product_terms=", ".join(product_terms(sp)),
             title=concept.title,
             hook_type=concept.hook_type,
             hook_line=concept.hook_line,
@@ -110,11 +118,18 @@ def generate(ch: ChannelProfile, sp: Sponsorship, concept: Concept, plan: SceneP
             feedback=note,
         )
         out: GenOutput = runner.invoke(prompt)
-        scenes = _apply_plan(out, plan)
-        if scenes is not None:
+        new = _apply_plan(out, plan)
+        if new is None:
+            note += f"\n[이전 답의 문제] 씬 수가 {len(out.scenes)}개였다. 계획대로 {len(plan.scenes)}개로."
+            continue
+        scenes = new
+        terms = product_terms(sp)
+        hidden = [sc.scene_no for sc in scenes if not sc.product_visible and any(t in sc.visual for t in terms)]
+        if not hidden:
             break
-        note += f"\n[이전 답의 문제] 씬 수가 {len(out.scenes)}개였다. 계획대로 {len(plan.scenes)}개로."
-    else:
+        note += (f"\n[이전 답의 문제] 씬 {hidden}은 product_visible=false 인데 화면 설명에 제품이 나왔다. "
+                 "그 씬은 제품 없이 사람·상황·결과만 보이게.")
+    if scenes is None:
         raise RuntimeError("스토리보드 씬 수가 계획과 맞지 않습니다.")
 
     return PlanOutput(

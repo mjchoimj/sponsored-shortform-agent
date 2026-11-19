@@ -158,12 +158,40 @@ def check_c2(ctx: CheckContext) -> tuple[bool, str]:
 
 
 # --- C3 노출 · C4 첫 씬 · C5 길이 -------------------------------------------------------
+SPEC = re.compile(r"\d|SPF|\+")
+MODEL_SUFFIX = {"라이트", "미니", "프로", "플러스", "맥스", "세트", "에디션"}
+
+
+def product_terms(sp: Sponsorship) -> list[str]:
+    """제품 이름에서 화면 설명에 나오면 '제품이 보인다'고 볼 단어: 브랜드(첫 단어) + 제품 종류(마지막 단어).
+
+    예: '소리담 오픈형 무선 이어폰' → ['소리담', '이어폰']. 숫자·규격(1.7L, 3개입, SPF50+)은 건너뛴다.
+    """
+    words = [w for w in sp.product_name.split() if len(w) >= 2 and not SPEC.search(w)]
+    while len(words) > 2 and words[-1] in MODEL_SUFFIX:  # '스마트워치 라이트' → '스마트워치'
+        words.pop()
+    return list(dict.fromkeys([words[0], words[-1]])) if words else []
+
+
+def hidden_product_scenes(ctx: CheckContext) -> list[int]:
+    """product_visible=false 인데 화면 설명(visual)에 제품이 나오는 씬 번호."""
+    terms = product_terms(ctx.sponsorship)
+    return [s.scene_no for s in ctx.output.storyboard.scenes
+            if not s.product_visible and any(t in s.visual for t in terms)]
+
+
 def check_c3(ctx: CheckContext) -> tuple[bool, str]:
     scenes = ctx.output.storyboard.scenes
     total = sum(s.seconds for s in scenes) or 1
-    prod = sum(s.seconds for s in scenes if s.product_visible)
+    hidden = set(hidden_product_scenes(ctx))
+    prod = sum(s.seconds for s in scenes if s.product_visible or s.scene_no in hidden)
     cap = load_rules()["product_exposure"]["max_ratio"]
-    return prod / total <= cap, f"제품 노출 {prod}/{total}초 = {prod / total:.0%} (상한 {cap:.0%})"
+    detail = f"제품 노출 {prod}/{total}초 = {prod / total:.0%} (상한 {cap:.0%})"
+    if hidden:
+        terms = ", ".join(product_terms(ctx.sponsorship))
+        detail += (f" · 씬 {sorted(hidden)}은 '제품 없음'인데 화면 설명에 제품({terms})이 나와 노출로 셈."
+                   " 이 씬들의 화면 설명에서 제품(손에 든 것·착용·옆에 둔 것 포함)을 빼고 사람·상황·결과만 보이게")
+    return prod / total <= cap, detail
 
 
 def check_c4(ctx: CheckContext) -> tuple[bool, str]:

@@ -140,5 +140,19 @@ class TestChecks(unittest.TestCase):
         self.assertEqual(speech_of("보풀 통 큼"), "중립")
 
 
+class TestHiddenProduct(unittest.TestCase):
+    def test_product_in_visual_counts_as_exposure(self):
+        from app.checks.items import product_terms
+        out = good_output()
+        term = product_terms(SP)[-1]
+        for s in out.storyboard.scenes[1:]:
+            if not s.product_visible:
+                s.visual = f"{term} 옆에서 웃는 모습"
+        report = run_checks(CH, SP, out)
+        c3 = next(i for i in report.items if i.code == "C3")
+        self.assertFalse(c3.passed)
+        self.assertIn("화면 설명에 제품", c3.detail)
+
+
 if __name__ == "__main__":
     unittest.main()
