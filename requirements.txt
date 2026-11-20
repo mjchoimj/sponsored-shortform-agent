@@ -15,3 +15,6 @@ langchain-mcp-adapters>=0.1
 # Structured output / settings
 pydantic>=2.0
 python-dotenv>=1.0
+
+# Web UI (P2, app/web.py)
+streamlit>=1.40

@@ -17,6 +17,7 @@
 | 구조화 출력 | Pydantic 모델 |
 | Trace | LangSmith (키 없으면 로컬 로그) (P1) |
 | 웹 검색 | Tavily + 캐시 (P2) |
+| 웹 화면 | Streamlit (`app/web.py`, P2). Agent 본체는 그대로 쓰고 입력·HITL만 화면으로 |
 | 설정 | `python-dotenv`, `.env` (`AWS_ACCESS_KEY_ID`·`AWS_SECRET_ACCESS_KEY`·`BEDROCK_REGION`(기본 us-east-1), `LANGSMITH_API_KEY`·`TAVILY_API_KEY` 선택) |
 필요 시 모델은 조정해서 사용하거나 복수의 모델을 상황에 맞춰 변경하여 중단없이 쓸 수 있게 한다.
 
@@ -44,6 +45,7 @@
 | 설치 | `pip install -r requirements.txt` 후 `.env.example` 을 `.env` 로 복사해 키 입력 |
 | 기획 실행 (대화형) | `python -m app.main examples/normal.json` |
 | 기획 실행 (자동 응답) | `python -m app.main examples/normal.json --auto` |
+| 웹 화면 | `python -m streamlit run app/web.py` (http://localhost:8501) |
 | 평가 전체 | `python -m eval.run_eval` (새로: `--fresh`, 일부: `--cases N01,F04`) |
 | 같은 제품 × 다른 채널 비교표 | `python -m eval.compare` |
 | RAG 색인 다시 만들기 | `python -m app.rag` |

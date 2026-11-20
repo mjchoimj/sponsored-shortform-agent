@@ -21,7 +21,9 @@ class PlanState(TypedDict, total=False):
     sponsorship: Sponsorship
     # 사전 점검
     precheck: PrecheckResult
-    precheck_decision: str  # accept_suggestion | proceed | cancel
+    precheck_decision: str  # accept_suggestion | proceed | cancel | edit
+    confirm_points: bool  # 참이면 문제가 없어도 포인트 구분을 사람에게 확인받는다 (웹 화면)
+    edit_notes: list[str]  # 사람이 고친 포인트를 코드가 정리하며 남긴 안내
     video_points: list[str]
     description_points: list[str]
     stopped: bool  # 거절·취소로 멈췄는지

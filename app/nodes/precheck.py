@@ -215,28 +215,74 @@ PROCEED = {"proceed", "2", "그대로", "원래대로"}
 CANCEL = {"cancel", "3", "n", "no", "취소", "중단"}
 
 
+def _clean(points) -> list[str]:
+    out, seen = [], set()
+    for p in points or []:
+        t = " ".join(str(p).split())
+        if t and t not in seen:
+            seen.add(t)
+            out.append(t)
+    return out
+
+
+def apply_edit(video_points, description_points, length_sec: int) -> tuple[list[str], list[str], list[str]]:
+    """사람이 직접 고친 포인트 정리 — 코드로 규칙을 지킨다.
+
+    빈 줄·중복은 지우고, 영상 포인트가 길이별 상한을 넘으면 넘친 뒤쪽 포인트를 설명란 맨 앞으로 옮긴다.
+    돌려주는 값: (영상 포인트, 설명란 포인트, 안내 문구)
+    """
+    video, desc = _clean(video_points), _clean(description_points)
+    desc = [d for d in desc if d not in video]
+    notes = []
+    cap = max_points(length_sec)
+    if len(video) > cap:
+        moved = video[cap:]
+        video = video[:cap]
+        desc = moved + desc
+        notes.append(f"{length_sec}초 영상은 포인트 {cap}개까지라서 {len(moved)}개를 설명란으로 옮겼습니다.")
+    return video, desc, notes
+
+
 def precheck_hitl_node(state: PlanState) -> dict:
-    """HITL ① — 문제가 있으면 제안을 보여 주고 사용자 답을 받는다."""
+    """HITL ① — 문제가 있으면 제안을 보여 주고 사용자 답을 받는다.
+
+    state["confirm_points"] 가 참이면(웹 화면) 문제가 없어도 영상/설명란 포인트 구분을 보여 주고 확인받는다.
+    답이 {"action": "edit", "video_points": [...], "description_points": [...]} 이면 사람이 고친 대로 쓴다.
+    """
     pc = state["precheck"]
     sp = state["sponsorship"]
     if pc.rejected:
         return {"stopped": True, "stop_reason": pc.reject_reason}
-    if not pc.issues:
+    if not pc.issues and not state.get("confirm_points"):
         return {
             "precheck_decision": "proceed",
             "video_points": pc.video_points,
             "description_points": pc.description_points,
         }
 
+    question = (
+        "광고주 요구에서 아래 문제를 찾았습니다. 제안대로 처리할까요?" if pc.issues
+        else "광고주 요구에서 문제는 찾지 못했어요. 영상에 넣을 포인트와 설명란으로 보낼 포인트를 확인해 주세요."
+    )
     answer = interrupt(
         {
             "stage": "precheck",
-            "question": "광고주 요구에서 아래 문제를 찾았습니다. 제안대로 처리할까요?",
+            "question": question,
             "issues": [it.model_dump() for it in pc.issues],
             "proposal": {"video_points": pc.video_points, "description_points": pc.description_points},
-            "options": {"accept_suggestion": "제안대로", "proceed": "원래 포인트 그대로", "cancel": "중단"},
+            "original_points": list(sp.promo_points),
+            "max_video_points": max_points(sp.length_sec),
+            "category": sp.category,
+            "options": {"accept_suggestion": "제안대로", "proceed": "원래 포인트 그대로", "cancel": "중단",
+                        "edit": "직접 고치기"},
         }
     )
+    if isinstance(answer, dict) and str(answer.get("action", "")).lower() == "edit":
+        video, desc, notes = apply_edit(answer.get("video_points"), answer.get("description_points"), sp.length_sec)
+        if video:
+            return {"precheck_decision": "edit", "video_points": video, "description_points": desc,
+                    "edit_notes": notes}
+        answer = "accept_suggestion"  # 영상 포인트를 다 지웠으면 제안대로 진행
     a = str(answer).strip().lower()
     if a in CANCEL:
         return {"precheck_decision": "cancel", "stopped": True, "stop_reason": "사용자가 사전 점검 단계에서 중단했습니다."}

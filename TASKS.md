@@ -113,6 +113,8 @@
 - [ ] **T24 · 대화형 입력** (P2)
 - [ ] **T25 · 노하우 문서 확장** (P2)
 - [ ] **T26 · LangSmith 공유 링크 + 스크린샷** (P2)
+- [x] **T28 · 웹 화면** (P2, 결정 로그 Q49) — Streamlit 입력 폼 + HITL 3곳 버튼, 상품 설명 붙여넣기(근거 인용 코드 확인), 사전 점검 "직접 고치기"
+  - 완료 확인: `python -m streamlit run app/web.py` 로 입력 → 저장까지 진행, `python -m unittest discover tests` 통과
 
 ## 8. 제출
 

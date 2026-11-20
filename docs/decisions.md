@@ -51,3 +51,4 @@
 | Q46 | 로컬 벡터 DB는 Chroma |
 | Q47 | 문서 전체에서 시간 계획(날짜·시간대)을 빼고 P0 → P1 → P2 순서만 남김 |
 | Q48 | (2026-11-19) LLM을 AWS Bedrock(us-east-1, `us.` 모델, `BEDROCK_REGION`으로 지정)으로 변경. 생성 Claude Haiku 4.5, 예비 Nova 2 Lite, 채점 Claude Sonnet 4.6. 임베딩은 계정에 Bedrock 임베딩 모델이 없어 Chroma 기본 로컬 임베딩 사용. 라이브러리 `langchain-openai` → `langchain-aws`·`boto3` (사용자 허락) |
+| Q49 | (2026-11-20) 웹 화면을 범위 밖에서 P2로 옮김. 라이브러리 `streamlit` 추가 (사용자 허락). 입력은 상품 설명 **붙여넣기**로 하고, 포인트마다 원문 근거 인용을 받아 코드로 존재 여부를 확인. 쇼핑몰 링크 자동 수집은 쿠팡 차단(403)·약관 문제로 하지 않음. 사전 점검 HITL에 "직접 고치기"를 추가하고, 웹 화면에서는 문제가 없어도 포인트 구분을 확인받음(`confirm_points`). 파일 실행·평가 흐름은 그대로 |
