@@ -88,6 +88,7 @@ def save_outputs(state: PlanState, base: Path | None = None) -> Path:
         "approved": state.get("approved", False),
         "revision": state.get("revision", 0),
         "final_action": state.get("final_action", ""),
+        "precheck_decision": state.get("precheck_decision", ""),  # edit = 사람이 포인트를 직접 고침
         "human_feedback": state.get("human_feedback", []),
         "items": [i.model_dump() for i in report.items],
         "history": [[i.model_dump() for i in r.items] for r in state.get("check_history", [])],
