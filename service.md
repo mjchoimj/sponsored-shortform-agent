@@ -7,14 +7,27 @@
 셋은 동등하다. 톤이 깨지면 구독자가 떠나고, 포인트가 빠지면 재협찬이 끊기고, 표시를 빠뜨리면 제재를 받는다.
 
 ```mermaid
-flowchart LR
-    A[채널 프로필<br/>+ 협찬 정보] --> B[사전 점검] --> C[RAG] --> D[콘셉트 3안] --> E[씬 배분 계획] --> F[스토리보드] --> G{자동 검증}
-    G -- 실패 · 3회 미만 --> E
-    G -- 통과 --> H[저장]
-    B -. HITL .-> U((사용자))
-    D -. HITL .-> U
-    G -. HITL .-> U
+flowchart TD
+    IN[/"채널 프로필 + 협찬 정보"/] --> PC["사전 점검<br/>코드 + AI"]
+    PC -- 거절 카테고리 --> STOP(["중단"])
+    PC --> H1{{"🙋 HITL ① 포인트 확인<br/>제안대로 · 원래대로 · 직접 고치기 · 중단"}}
+    H1 -- 중단 --> STOP
+    H1 -- 진행 --> RAG["자료 검색 RAG<br/>🤖 Tool Calling"]
+    RAG --> CO["콘셉트 3안"]
+    CO --> H2{{"🙋 HITL ② 콘셉트 선택<br/>1안 · 2안 · 3안"}}
+    H2 --> PL["씬 배분 계획"]
+    PL --> GEN["스토리보드 · 업로드 패키지 작성"]
+    GEN --> CK{"자동 검증<br/>코드 + MCP 검사기"}
+    CK -- "실패 · 수정 3회 미만" --> PL
+    CK -- "통과 또는 수정 3회" --> H3{{"🙋 HITL ③ 최종 검토<br/>승인 · 수정 요청 · 반려"}}
+    H3 -- "수정 요청 · 최대 3번" --> PL
+    H3 -- "승인 · 반려" --> SV[("저장<br/>기획안.md · storyboard.json · check_report.json")]
+
+    classDef hitl fill:#FFE8B3,stroke:#E08A00,stroke-width:3px,color:#222
+    class H1,H2,H3 hitl
 ```
+
+🟧 주황 육각형이 사람이 개입하는 곳(HITL)이다. 그래프가 `interrupt`로 멈추고 사람의 답을 받아야 다음으로 넘어간다.
 
 ## 누가 쓰나
 
@@ -68,6 +81,42 @@ MVP엔 웹 리서치가 없어서 `product_desc`가 사실상 필수다.
   포인트마다 원문 근거 문장을 인용하게 하고, 그 인용이 붙여 넣은 글에 실제로 있는지 코드로 확인해 없는 포인트는 뺀다.
   카테고리가 목록에 없으면 비워 두고 사람이 고른다. 결과는 초안이고 사람이 확인·수정한 뒤 시작한다.
   쇼핑몰 링크 자동 수집은 하지 않는다(쿠팡 등은 봇 접근 차단·약관상 자동 수집 금지, 상세페이지 대부분이 이미지).
+
+웹 화면 흐름:
+
+```mermaid
+flowchart TD
+    subgraph S1["① 입력 화면"]
+        CH["채널 고르기<br/>가상 채널 CH1~CH4 또는 직접 입력"]
+        SP["협찬 정보"]
+        SP -- "🛒 상품 설명 붙여넣기" --> EX["AI로 정리하기<br/>제품명 · 카테고리 · 설명 · 포인트"]
+        EX --> VQ["코드 확인<br/>근거 인용이 원문에 없는 포인트는 뺌"]
+        VQ --> FORM["입력 칸 채움<br/>사람이 확인 · 수정, 영상 길이 선택"]
+        SP -- "칸에 직접 입력" --> FORM
+        CH --> START(["기획 시작"])
+        FORM --> START
+    end
+
+    START --> R1["⚙️ Agent: 사전 점검"]
+    R1 -- "거절 카테고리" --> DONE
+    R1 --> Q1{{"🙋 ② 포인트 확인<br/>이대로 · 제안대로 · ✏️ 직접 고치기 · 중단"}}
+    Q1 -- "중단" --> DONE
+    Q1 -- "진행" --> R2["⚙️ Agent: 자료 검색 → 콘셉트 3안"]
+    R2 --> Q2{{"🙋 ③ 콘셉트 카드 3장 중 선택"}}
+    Q2 --> R3["⚙️ Agent: 계획 → 작성 → 자동 검증 · 수정 루프"]
+    R3 --> Q3{{"🙋 ④ 최종 검토<br/>스토리보드 · 업로드 패키지 · 검증 9항목"}}
+    Q3 -- "수정 요청 글 · 최대 3번" --> R3
+    Q3 -- "승인 · 반려" --> DONE["⑤ 결과 화면<br/>스토리보드 · ⬇️ 결과 파일 3개 · 새 기획 시작"]
+
+    classDef hitl fill:#FFE8B3,stroke:#E08A00,stroke-width:3px,color:#222
+    classDef code fill:#DCEBFF,stroke:#2F6FD0,color:#222
+    classDef agent fill:#EEEEEE,stroke:#888888,color:#222
+    class Q1,Q2,Q3 hitl
+    class VQ code
+    class R1,R2,R3 agent
+```
+
+버튼 답은 멈춰 있던 그래프에 `Command(resume=...)`로 전달된다. 화면은 입력과 HITL만 바꾸고 Agent 본체는 파일 실행과 같다.
 
 ## 출력
 

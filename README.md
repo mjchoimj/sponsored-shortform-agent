@@ -27,15 +27,27 @@
 ## 어떻게 동작하나
 
 ```mermaid
-flowchart LR
-    A[채널 프로필<br/>+ 협찬 정보] --> B[사전 점검] --> C[RAG 검색] --> D[콘셉트 3안] --> E[씬 배분 계획] --> F[스토리보드 생성] --> G{자동 검증}
-    G -- 실패 · 3회 미만 --> E
-    G -- 통과 --> H[저장]
-    B -. 확인 .-> U((사용자))
-    D -. 선택 .-> U
-    G -. 검토 .-> U
-    U -. 수정 요청 .-> E
+flowchart TD
+    IN[/"채널 프로필 + 협찬 정보"/] --> PC["사전 점검<br/>코드 + AI"]
+    PC -- 거절 카테고리 --> STOP(["중단"])
+    PC --> H1{{"🙋 HITL ① 포인트 확인<br/>제안대로 · 원래대로 · 직접 고치기 · 중단"}}
+    H1 -- 중단 --> STOP
+    H1 -- 진행 --> RAG["자료 검색 RAG<br/>🤖 Tool Calling"]
+    RAG --> CO["콘셉트 3안"]
+    CO --> H2{{"🙋 HITL ② 콘셉트 선택<br/>1안 · 2안 · 3안"}}
+    H2 --> PL["씬 배분 계획"]
+    PL --> GEN["스토리보드 · 업로드 패키지 작성"]
+    GEN --> CK{"자동 검증<br/>코드 + MCP 검사기"}
+    CK -- "실패 · 수정 3회 미만" --> PL
+    CK -- "통과 또는 수정 3회" --> H3{{"🙋 HITL ③ 최종 검토<br/>승인 · 수정 요청 · 반려"}}
+    H3 -- "수정 요청 · 최대 3번" --> PL
+    H3 -- "승인 · 반려" --> SV[("저장<br/>기획안.md · storyboard.json · check_report.json")]
+
+    classDef hitl fill:#FFE8B3,stroke:#E08A00,stroke-width:3px,color:#222
+    class H1,H2,H3 hitl
 ```
+
+🟧 주황 육각형이 사람이 개입하는 곳(HITL)입니다. 그래프가 `interrupt`로 멈추고, 사람이 답해야 다음으로 넘어갑니다. "직접 고치기"는 웹 화면에서만 나옵니다.
 
 | 단계 | 하는 일 | 사용 기술 |
 |---|---|---|
@@ -105,6 +117,42 @@ python -m streamlit run app/web.py
 - 브라우저가 자동으로 열리지 않으면 `http://localhost:8501`로 들어가세요.
 - 쓰는 동안 터미널 창을 닫지 마세요. 끝낼 때는 그 창에서 `Ctrl + C`를 누릅니다.
 - 이미 켜져 있는데 한 번 더 실행하면 `8502` 같은 다른 번호로 하나가 더 켜집니다. 하나만 켜 두세요.
+
+화면 흐름:
+
+```mermaid
+flowchart TD
+    subgraph S1["① 입력 화면"]
+        CH["채널 고르기<br/>가상 채널 CH1~CH4 또는 직접 입력"]
+        SP["협찬 정보"]
+        SP -- "🛒 상품 설명 붙여넣기" --> EX["AI로 정리하기<br/>제품명 · 카테고리 · 설명 · 포인트"]
+        EX --> VQ["코드 확인<br/>근거 인용이 원문에 없는 포인트는 뺌"]
+        VQ --> FORM["입력 칸 채움<br/>사람이 확인 · 수정, 영상 길이 선택"]
+        SP -- "칸에 직접 입력" --> FORM
+        CH --> START(["기획 시작"])
+        FORM --> START
+    end
+
+    START --> R1["⚙️ Agent: 사전 점검"]
+    R1 -- "거절 카테고리" --> DONE
+    R1 --> Q1{{"🙋 ② 포인트 확인<br/>이대로 · 제안대로 · ✏️ 직접 고치기 · 중단"}}
+    Q1 -- "중단" --> DONE
+    Q1 -- "진행" --> R2["⚙️ Agent: 자료 검색 → 콘셉트 3안"]
+    R2 --> Q2{{"🙋 ③ 콘셉트 카드 3장 중 선택"}}
+    Q2 --> R3["⚙️ Agent: 계획 → 작성 → 자동 검증 · 수정 루프"]
+    R3 --> Q3{{"🙋 ④ 최종 검토<br/>스토리보드 · 업로드 패키지 · 검증 9항목"}}
+    Q3 -- "수정 요청 글 · 최대 3번" --> R3
+    Q3 -- "승인 · 반려" --> DONE["⑤ 결과 화면<br/>스토리보드 · ⬇️ 결과 파일 3개 · 새 기획 시작"]
+
+    classDef hitl fill:#FFE8B3,stroke:#E08A00,stroke-width:3px,color:#222
+    classDef code fill:#DCEBFF,stroke:#2F6FD0,color:#222
+    classDef agent fill:#EEEEEE,stroke:#888888,color:#222
+    class Q1,Q2,Q3 hitl
+    class VQ code
+    class R1,R2,R3 agent
+```
+
+🟧 주황 육각형은 사람이 답하는 화면, 🟦 파란 상자는 AI 결과를 코드가 확인하는 곳, ⬜ 회색 상자는 Agent가 일하는 동안(단계별 ✅ 표시)입니다. 버튼을 누르면 그 답이 멈춰 있던 그래프에 전달되고(`Command(resume=...)`), Agent가 다음 질문이나 끝까지 이어서 실행합니다.
 
 웹 화면에만 있는 기능:
 
